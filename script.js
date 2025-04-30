@@ -87,28 +87,22 @@ function convert() {
 
   document.getElementById('output').innerText = result;
 
-  if (isWord) {
-    const linksDiv = document.getElementById('links');
-    linksDiv.innerHTML = ''; // Очищаем
+  const linksDiv = document.getElementById('links');
+  linksDiv.innerHTML = ''; // Очищаем перед выводом
 
+  if (isWord) {
     Object.entries(items).forEach(([name, img]) => {
       const link = document.createElement('a');
       link.href = `https://t.me/nft/${name.replace(/\s+/g, '')}-${result}`;
       link.target = '_blank';
-      link.style.display = 'inline-block';
-      link.style.margin = '10px';
+      link.className = 'link-card'; // Применяем стиль плитки
 
       const image = document.createElement('img');
       image.src = img;
       image.alt = name;
-      image.style.width = '100px';
-      image.style.height = '100px';
-      image.style.borderRadius = '8px';
-      image.title = name;
 
-      const label = document.createElement('div');
+      const label = document.createElement('span');
       label.textContent = name;
-      label.style.fontSize = '0.9em';
 
       link.appendChild(image);
       link.appendChild(label);
