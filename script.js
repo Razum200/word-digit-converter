@@ -1,16 +1,3 @@
-// Подключение Telegram Web App API
-const tg = window.Telegram.WebApp;
-tg.expand(); // разворачивает окно на максимум
-
-// Отображение имени пользователя (если доступно)
-const userInfo = document.getElementById('user-info');
-if (tg.initDataUnsafe.user) {
-  const user = tg.initDataUnsafe.user;
-  const name = user.username ? `@${user.username}` : user.first_name || 'пользователь';
-  userInfo.innerText = `Привет, ${name}!`;
-}
-
-// Словарь преобразования
 const letterToDigit = {
   'L': '1',
   'Z': '2',
@@ -28,7 +15,20 @@ const digitToLetter = Object.fromEntries(
   Object.entries(letterToDigit).map(([k, v]) => [v, k])
 );
 
-// Функции конвертации
+const items = [
+  "EasterEgg", "JackInTheBox", "NekoHelmet", "TopHat", "LovePotion", "ToyBear",
+  "DiamondRing", "LootBag", "LunarSnake", "TamaGadget", "CandyCane", "CookieHeart",
+  "PartySparkler", "JingleBells", "GingerCookie", "WinterWreath", "SantaHat",
+  "SnowGlobe", "SnowMittens", "SleighBell", "JesterHat", "StarNotepad", "BunnyMuffin",
+  "SwissWatch", "SignetRing", "GenieLamp", "AstralShard", "PreciousPeach", "PlushPepe",
+  "SpicedWine", "JellyBunny", "HangingStar", "DurovsCap", "LoveCandle", "PerfumeBottle",
+  "MiniOscar", "EternalRose", "BerryBox", "VintageCigar", "RecordPlayer", "MagicPotion",
+  "ElectricSkull", "KissedFrog", "HypnoLollipop", "HexPot", "EvilEye", "IonGem",
+  "SharpTongue", "MadPumpkin", "TrappedHeart", "SkullFlower", "CrystalBall",
+  "FlyingBroom", "VoodooDoll", "ScaredCat", "WitchHat", "EternalCandle", "SpyAgaric",
+  "LolPop", "SakuraFlower", "HomemadeCake", "DeskCalendar", "BDayCandle"
+];
+
 function wordToDigits(word) {
   return word.toUpperCase().split('')
     .map(ch => letterToDigit[ch] || '?')
@@ -41,12 +41,24 @@ function digitsToWord(digits) {
     .join('');
 }
 
-// Обработка ввода
 function convert() {
   const input = document.getElementById('input').value.trim();
-  const result = /^[a-zA-Zа-яА-Я]+$/.test(input)
-    ? wordToDigits(input)
-    : digitsToWord(input);
+  const isWord = /^[a-zA-Z]+$/.test(input);
+  let result = isWord ? wordToDigits(input) : digitsToWord(input);
 
   document.getElementById('output').innerText = result;
+
+  const linksDiv = document.getElementById('links');
+  linksDiv.innerHTML = "";
+
+  if (isWord) {
+    const digitCode = result;
+    items.forEach(item => {
+      const link = document.createElement("a");
+      link.href = `https://t.me/nft/${item}-${digitCode}`;
+      link.target = "_blank";
+      link.innerText = `${item}-${digitCode}`;
+      linksDiv.appendChild(link);
+    });
+  }
 }
