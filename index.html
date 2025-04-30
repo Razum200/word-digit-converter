@@ -51,6 +51,37 @@
       color: gray;
       margin-bottom: 10px;
     }
+    
+    #corner-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      text-align: right;
+      font-size: 0.8em;
+      opacity: 0.7;
+      line-height: 1.2;
+    }
+
+    #corner-info a {
+      color: gray;
+      text-decoration: none;
+    }
+
+    #corner-info a:hover {
+      text-decoration: underline;
+      color: #000;
+    }
+
+    #owner-message {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-top: 30px;
+      display: none;
+    }
+
+    #owner-message.show {
+      display: block;
+    }
 
     #links {
       margin-top: 20px;
@@ -80,18 +111,43 @@
     .link-card span {
       font-size: 0.9em;
     }
+
+    #owner-message {
+      font-size: 1.1em;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--text);
+    }
+
+    #owner-message a {
+      color: var(--button-bg);
+      text-decoration: none;
+    }
+
+    #owner-message a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>ДЕКОДЕР № ПОДАРКА</h1>
-  <h1>Слова ↔ Цифры</h1>
-  <p id="user-info"></p>
-  <input id="input" placeholder="Введите слово или цифры" oninput="convert()" />
-  <br>
-  <button onclick="convert()">Конвертировать</button>
-  <p id="output"></p>
-  <h1>Powered by SooooN</h1>
-  <h1>For ANON DAO</h1>
-  <div id="links"></div>
+  <h1>WHAT GIFT SAID?</h1>
+<h1>TEXT ↔ NYMBER</h1>
+<p id="user-info"></p>
+
+<input id="input" placeholder="Введите слово или число" oninput="convert()" />
+<br>
+<button onclick="convert()">Конвертировать</button>
+
+<p id="output"></p>
+
+<!-- Вот эта строка — сообщение "Напиши владельцу" -->
+<p id="owner-message" class="hidden">📬 Напиши владельцу:</p>
+
+<div id="links"></div>
+
+<div id="corner-info">
+  <a href="https://t.me/giftsaid" target="_blank">Powered by SooooN<br>For ANON DAO</a>
+</div>
 </body>
 </html>
