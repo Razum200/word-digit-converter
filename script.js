@@ -130,7 +130,7 @@ window.onload = function () {
     const name = user.username ? `@${user.username}` : user.first_name || 'гость';
     const infoEl = document.getElementById('user-info');
     if (infoEl) {
-      infoEl.textContent = `Привет, ${name}`;
+      infoEl.textContent = `👤 Добро пожаловать, ${name}, здесь подарки говорят`;
     }
   }
 };
