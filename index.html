@@ -41,9 +41,25 @@
     }
 
     #output {
+      display: none; /* Скрыт по умолчанию */
       margin-top: 20px;
       font-size: 1.5em;
       font-weight: bold;
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 12px 24px; /* Это padding кнопки, аналогичное поле для #output */
+      background-color: #f9f9f9;
+      min-width: 120px;
+      height: 30px; /* Если хотите точную высоту */
+      line-height: 30px; /* Выравнивание текста по центру */
+    }
+
+    button {
+      padding: 12px 24px; /* Оставляем кнопку как была */
+    }
+
+    #output.show {
+      display: inline-block; /* Показать, когда результат есть */
     }
 
     #user-info {
@@ -147,7 +163,7 @@
 <div id="links"></div>
 
 <div id="corner-info">
-  <a href="https://t.me/giftsaid" target="_blank">Powered by SooooN<br>For ANON DAO</a>
+  <a href="https://t.me/giftsaid" target="_blank">Powered by Soooon<br>GIFT SAID GROUP<br>For ANON DAO</a>
 </div>
 </body>
 </html>
