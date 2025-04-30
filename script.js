@@ -110,3 +110,14 @@ function convert() {
     });
   }
 }
+// Приветствие пользователя
+window.onload = function () {
+  const user = Telegram.WebApp.initDataUnsafe?.user;
+  if (user) {
+    const name = user.username ? `@${user.username}` : user.first_name || 'гость';
+    const infoEl = document.getElementById('user-info');
+    if (infoEl) {
+      infoEl.textContent = `👤 Добро пожаловать, ${name}, в мир ANON DAO`;
+    }
+  }
+};
