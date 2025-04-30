@@ -51,14 +51,36 @@
       color: gray;
       margin-bottom: 10px;
     }
+
+    #links {
+      margin-top: 20px;
+      text-align: left;
+      display: inline-block;
+      font-size: 1em;
+      width: 90%;
+    }
+
+    #links a {
+      display: block;
+      text-decoration: none;
+      color: var(--button-bg);
+      margin-bottom: 5px;
+    }
+
+    #links a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
-  <h1>Конвертер Слов ↔ Цифры</h1>
+  <h1>ДЕКОДЕР № ПОДАРКА</h1>
+  <h1>Слова ↔ Цифры</h1>
   <p id="user-info"></p>
   <input id="input" placeholder="Введите слово или цифры" oninput="convert()" />
   <br>
   <button onclick="convert()">Конвертировать</button>
   <p id="output"></p>
+  <h1>Powered by soooon</h1>
+  <div id="links"></div>
 </body>
 </html>
