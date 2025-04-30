@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Конвертер Слов ↔ Цифры</title>
+  <script src="script.js" defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+    }
+    input {
+      width: 80%;
+      padding: 10px;
+      font-size: 1.2em;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      margin-top: 10px;
+    }
+    #output {
+      margin-top: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Конвертер Слов ↔ Цифры</h1>
+  <input id="input" placeholder="Введите слово или цифры" />
+  <br>
+  <button onclick="convert()">Конвертировать</button>
+  <p id="output"></p>
+</body>
+</html>
