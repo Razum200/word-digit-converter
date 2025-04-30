@@ -123,3 +123,14 @@ function convert() {
     ownerMessage.classList.remove('show'); // скрыть надпись
   }
 }
+// Приветствие пользователя
+window.onload = function () {
+  const user = Telegram.WebApp.initDataUnsafe?.user;
+  if (user) {
+    const name = user.username ? `@${user.username}` : user.first_name || 'гость';
+    const infoEl = document.getElementById('user-info');
+    if (infoEl) {
+      infoEl.textContent = `Привет, ${name}`;
+    }
+  }
+};
