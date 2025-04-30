@@ -1,3 +1,16 @@
+// Подключение Telegram Web App API
+const tg = window.Telegram.WebApp;
+tg.expand(); // разворачивает окно на максимум
+
+// Отображение имени пользователя (если доступно)
+const userInfo = document.getElementById('user-info');
+if (tg.initDataUnsafe.user) {
+  const user = tg.initDataUnsafe.user;
+  const name = user.username ? `@${user.username}` : user.first_name || 'пользователь';
+  userInfo.innerText = `Привет, ${name}!`;
+}
+
+// Словарь преобразования
 const letterToDigit = {
   'L': '1',
   'Z': '2',
@@ -15,6 +28,7 @@ const digitToLetter = Object.fromEntries(
   Object.entries(letterToDigit).map(([k, v]) => [v, k])
 );
 
+// Функции конвертации
 function wordToDigits(word) {
   return word.toUpperCase().split('')
     .map(ch => letterToDigit[ch] || '?')
@@ -27,9 +41,10 @@ function digitsToWord(digits) {
     .join('');
 }
 
+// Обработка ввода
 function convert() {
   const input = document.getElementById('input').value.trim();
-  let result = /^[a-zA-Z]+$/.test(input)
+  const result = /^[a-zA-Zа-яА-Я]+$/.test(input)
     ? wordToDigits(input)
     : digitsToWord(input);
 
