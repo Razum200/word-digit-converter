@@ -88,14 +88,18 @@ function convert() {
   document.getElementById('output').innerText = result;
 
   const linksDiv = document.getElementById('links');
-  linksDiv.innerHTML = ''; // Очищаем перед выводом
+  const ownerMessage = document.getElementById('owner-message');
+
+  linksDiv.innerHTML = ''; // очищаем плитки
 
   if (isWord) {
+    ownerMessage.classList.add('show'); // показать надпись
+
     Object.entries(items).forEach(([name, img]) => {
       const link = document.createElement('a');
       link.href = `https://t.me/nft/${name.replace(/\s+/g, '')}-${result}`;
       link.target = '_blank';
-      link.className = 'link-card'; // Применяем стиль плитки
+      link.className = 'link-card';
 
       const image = document.createElement('img');
       image.src = img;
@@ -108,16 +112,7 @@ function convert() {
       link.appendChild(label);
       linksDiv.appendChild(link);
     });
+  } else {
+    ownerMessage.classList.remove('show'); // скрыть надпись
   }
 }
-// Приветствие пользователя
-window.onload = function () {
-  const user = Telegram.WebApp.initDataUnsafe?.user;
-  if (user) {
-    const name = user.username ? `@${user.username}` : user.first_name || 'гость';
-    const infoEl = document.getElementById('user-info');
-    if (infoEl) {
-      infoEl.textContent = `👤 Добро пожаловать, ${name}, в мир ANON DAO`;
-    }
-  }
-};
