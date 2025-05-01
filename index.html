@@ -217,50 +217,53 @@
       position: relative;
     }
 
-  /* Фиксированная высота нижнего меню и увеличение кнопок */
-  nav {
-    z-index: 1000;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 80px; /* Увеличиваем высоту меню */
-    background: var(--bg);
-    border-top: 2px solid #cccccc23;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0 15px;
-  }
-
-  /* Базовые стили — для ПК */
-nav button {
-  width: 70px;
-  height: 70px;
-  font-size: 28px;
-  background-color: var(--button-bg);
-  color: var(--button-text);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s;
-}
-
-/* Мобильная версия — увеличиваем всё */
-@media (max-width: 600px) {
-  nav button {
-    width: 120px;
-    height: 120px;
-    font-size: 40px;
-  }
-}
-
-  nav button:hover {
-    background-color: #005f8a; /* Цвет кнопки при наведении */
-  }
+      nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      background-color: var(--nav-bg);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--nav-border);
+      z-index: 1000;
+    }
+    
+    /* Кнопки — базовый вид (для ПК) */
+    nav button {
+      width: 70px;
+      height: 70px;
+      font-size: 28px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    /* Немного анимации при нажатии */
+    nav button:active {
+      transform: scale(0.95);
+    }
+    
+    /* Адаптация под мобильные экраны */
+    @media (max-width: 600px) {
+      nav {
+        height: 90px;
+      }
+    
+      nav button {
+        width: 100px;
+        height: 80px;
+        font-size: 36px;
+      }
+    }
 
   /* Плавное поведение для вывода (показывания) блока */
   #output {
