@@ -234,15 +234,19 @@
   }
 
   nav button {
-    font-size: 30px; /* Увеличиваем размер шрифта кнопок */
-    padding: 10px 20px; /* Увеличиваем padding для кнопок */
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    border-radius: 12px; /* Сделаем кнопки округленными */
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
 
   nav button:hover {
     background-color: #005f8a; /* Цвет кнопки при наведении */
@@ -296,7 +300,7 @@
   }
 </style>
 </head>
-<body>
+<body onload="showTab('decoder')">
 
 <div id="corner-info">
   <a href="https://t.me/giftsaid" target="_blank">Powered by Soooon<br>GIFT SAID GROUP<br>For ANON DAO</a>
