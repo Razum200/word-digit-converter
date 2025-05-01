@@ -130,7 +130,23 @@ window.onload = function () {
     const name = user.username ? `@${user.username}` : user.first_name || 'гость';
     const infoEl = document.getElementById('user-info');
     if (infoEl) {
-      infoEl.textContent = `👤 Добро пожаловать, ${name}, здесь подарки говорят`;
+      infoEl.textContent = `Привет, ${name}`;
     }
   }
 };
+function showTab(tab) {
+  document.querySelectorAll('.tab-page').forEach(el => {
+    el.classList.remove('active');
+  });
+
+  const target = document.getElementById('tab-' + tab);
+  if (target) {
+    target.classList.add('active');
+    localStorage.setItem('lastTab', tab);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const last = localStorage.getItem('lastTab') || 'decoder';
+  showTab(last);
+});
