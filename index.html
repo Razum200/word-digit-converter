@@ -13,7 +13,7 @@
       --button-bg: var(--tg-theme-button-color, #0088cc);
       --button-text: var(--tg-theme-button-text-color, #ffffff);
     }
-
+  
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -21,7 +21,7 @@
       background-color: var(--bg);
       color: var(--text);
     }
-
+  
     input {
       width: 90%;
       padding: 12px;
@@ -30,7 +30,7 @@
       border: 1px solid #ccc;
       margin-bottom: 10px;
     }
-
+  
     button {
       padding: 12px 24px;
       font-size: 1.2em;
@@ -40,7 +40,7 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
+  
     #output {
       display: none;
       margin-top: 20px;
@@ -54,38 +54,49 @@
       height: 30px;
       line-height: 30px;
       color: #000;
+      transition: opacity 0.3s ease-in-out;
     }
-
+  
     #output.show {
       display: inline-block;
+      opacity: 1;
     }
-
+  
     #user-info {
       font-size: 1em;
-      color: gray;
+      color: rgb(29, 28, 28);
       margin-bottom: 10px;
     }
-    
+
     #corner-info {
-      position: absolute;
+      position: fixed;
       top: 10px;
       right: 10px;
+      z-index: 999;
+      font-size: 0.75em;
+      line-height: 1.2em;
+      color: #ff00ff;
       text-align: right;
-      font-size: 0.8em;
-      opacity: 0.7;
-      line-height: 1.2;
+      font-family: 'Courier New', monospace;
+      pointer-events: auto; /* чтобы не мешал кликам */
+      opacity: 0.8;
+      animation: glitch 1s infinite;
     }
 
     #corner-info a {
-      color: gray;
+      color: #ff00ff;
       text-decoration: none;
     }
 
-    #corner-info {
-      position: relative;
-      z-index: 10; /* или больше, в зависимости от ситуации */
+    @keyframes glitch {
+      0% { transform: translate(0, 0); opacity: 1; }
+      20% { transform: translate(-1px, 1px); opacity: 0.8; }
+      40% { transform: translate(1px, -1px); opacity: 1; }
+      60% { transform: translate(-2px, 0); opacity: 0.9; }
+      80% { transform: translate(2px, 2px); opacity: 1; }
+      100% { transform: translate(0, 0); opacity: 1; }
     }
-
+  
     #owner-message {
       font-size: 1.1em;
       font-weight: bold;
@@ -94,11 +105,11 @@
       color: var(--text);
       display: none;
     }
-
+  
     #owner-message.show {
       display: block;
     }
-
+  
     #links {
       margin-top: 20px;
       display: flex;
@@ -106,81 +117,52 @@
       justify-content: center;
       gap: 16px;
     }
-
-    #tab-message {
-      background-image: url('beast_animation.gif');
-      background-size: cover; /* растягиваем изображение на весь контейнер */
-      background-position: center; /* центрируем изображение */
-      background-repeat: no-repeat; /* чтобы изображение не повторялось */
-      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+  
+    #tab-message,
+    #tab-profile,
+    #tab-decoder,
+    #tab-game,
+    #tab-gallery {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
-      align-items: center; /* выравнивание содержимого по центру */
-      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+      align-items: center;
+      color: #fff;
     }
-
-    #tab-profile {
-      background-image: url('profile.webp');
-      background-size: cover; /* растягиваем изображение на весь контейнер */
-      background-position: center; /* центрируем изображение */
-      background-repeat: no-repeat; /* чтобы изображение не повторялось */
-      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
-      display: flex;
-      justify-content: center;
-      align-items: center; /* выравнивание содержимого по центру */
-      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
-    }
-
+  
+    #tab-message,
+    #tab-profile,
     #tab-decoder {
-      background-image: url('83457.webp');
-      background-size: cover; /* растягиваем изображение на весь контейнер */
-      background-position: center; /* центрируем изображение */
-      background-repeat: no-repeat; /* чтобы изображение не повторялось */
-      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
-      display: flex;
-      justify-content: center;
-      align-items: center; /* выравнивание содержимого по центру */
-      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+      background-image: url('beast_animation.gif');
     }
-
+  
     #tab-game {
       background-image: url('game.webp');
-      background-size: cover; /* растягиваем изображение на весь контейнер */
-      background-position: center; /* центрируем изображение */
-      background-repeat: no-repeat; /* чтобы изображение не повторялось */
-      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
-      display: flex;
-      justify-content: center;
-      align-items: center; /* выравнивание содержимого по центру */
-      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
     }
-
+  
     #tab-gallery {
       background-image: url('gallery2.webp');
-      background-size: cover; /* растягиваем изображение на весь контейнер */
-      background-position: center; /* центрируем изображение */
-      background-repeat: no-repeat; /* чтобы изображение не повторялось */
-      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
-      display: flex;
-      justify-content: center;
-      align-items: center; /* выравнивание содержимого по центру */
-      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
     }
-
+  
     .card-content {
-      background-color: rgba(255, 255, 255, 0.514);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.3);
       padding: 20px;
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-      max-width: 95%;
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(0, 255, 255, 0.2); /* неоновый свет */
+      max-width: 90%;
       margin: 40px auto;
-      backdrop-filter: blur(6px);
-      color: #000;
-      
-      max-height: 50vh; /* Ограничивает высоту блока до половины экрана */
-      overflow-y: auto; /* Добавляет вертикальную прокрутку, если контент превышает max-height */
+      backdrop-filter: blur(8px) saturate(120%);
+      color: #fff;
+      max-height: 60vh;
+      overflow-y: auto;
     }
-
+  
     .link-card {
       display: flex;
       flex-direction: column;
@@ -190,18 +172,18 @@
       text-decoration: none;
       color: var(--text);
     }
-
+  
     .link-card img {
       width: 100px;
       height: 100px;
       border-radius: 10px;
       margin-bottom: 5px;
     }
-
+  
     .link-card span {
       font-size: 0.9em;
     }
-
+  
     .tab-page {
       opacity: 0;
       transition: opacity 0.3s ease;
@@ -211,115 +193,61 @@
       left: 0;
       right: 0;
     }
-
+  
     .tab-page.active {
       opacity: 1;
       pointer-events: auto;
       position: relative;
     }
-
-      nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 70px;
-      background-color: var(--nav-bg);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      border-top: 1px solid var(--nav-border);
-      z-index: 1000;
-    }
-    
-    /* Кнопки — базовый вид (для ПК) */
-    nav button {
-      width: 70px;
-      height: 70px;
-      font-size: 28px;
-      background-color: var(--button-bg);
-      color: var(--button-text);
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.3s, transform 0.2s;
-    }
-    
-    /* Немного анимации при нажатии */
-    nav button:active {
-      transform: scale(0.95);
-    }
-    
-    /* Адаптация под мобильные экраны */
-    @media (max-width: 600px) {
-      nav {
-        height: 90px;
-      }
-    
-      nav button {
-        width: 100px;
-        height: 80px;
-        font-size: 36px;
-      }
-    }
-
-  /* Плавное поведение для вывода (показывания) блока */
-  #output {
-    display: none;
-    margin-top: 20px;
-    font-size: 1.5em;
-    font-weight: bold;
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 12px 24px;
-    background-color: #f9f9f9;
-    min-width: 120px;
-    height: 30px;
-    line-height: 30px;
-    color: #000;
-    transition: opacity 0.3s ease-in-out;
-  }
-
-  #output.show {
-    display: inline-block;
-    opacity: 1;
-  }
-
-  /* Выровнять элементы в родительском контейнере для более красивого отображения */
-  .card-content {
-    background-color: rgba(255, 255, 255, 0.514);
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    max-width: 90%;
-    margin: 40px auto;
-    backdrop-filter: blur(6px);
-    color: #000;
-    max-height: 50vh;
-    overflow-y: auto;
-  }
-
-  /* Изменения в медиазапросах для улучшения отображения на мобильных устройствах */
-  @media (max-width: 768px) {
+  
     nav {
-      height: auto;
-      min-height: 70px; /* Вместо жёсткого ограничения */
-    }
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: rgba(20, 20, 20, 0.8); /* полупрозрачный */
+  backdrop-filter: blur(10px); /* стеклянный эффект */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1000;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+}
 
-    nav button {
-      font-size: 28px;
-      padding: 10px 16px; /* добавляет "мяса" */
-    }
-  }
-</style>
+nav button {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  background-color: #111;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+  text-shadow: 0 0 3px #00ffff;
+}
+
+nav button:hover {
+  box-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff;
+  transform: scale(1.05);
+}
+
+nav button:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px #00ffff, inset 0 0 10px #00ffff;
+}
+  </style>
 </head>
 <body onload="showTab('decoder')">
 
 <div id="corner-info">
-  <a href="https://t.me/giftsaid" target="_blank">Powered by Soooon<br>GIFT SAID GROUP<br>For ANON DAO</a>
+  <a href="https://t.me/giftsaid" target="_blank">Powered by Soooon For Anon DAO<br>GIFT SAID GROUP</a>
 </div>
 
 <!-- Контейнеры вкладок -->
