@@ -217,16 +217,83 @@
       position: relative;
     }
 
-    /* Медиазапросы для мобильных устройств */
-    @media (max-width: 768px) {
-      nav {
-        height: 50px; /* Уменьшаем высоту меню на мобильных устройствах */
-      }
+  /* Фиксированная высота нижнего меню и увеличение кнопок */
+  nav {
+    z-index: 1000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px; /* Увеличиваем высоту меню */
+    background: var(--bg);
+    border-top: 1px solid #cccccc23;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+  }
 
-      nav button {
-        font-size: 20px; /* Уменьшаем размер кнопок на мобильных устройствах */
-      }
+  nav button {
+    font-size: 30px; /* Увеличиваем размер шрифта кнопок */
+    padding: 10px 20px; /* Увеличиваем padding для кнопок */
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 12px; /* Сделаем кнопки округленными */
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  nav button:hover {
+    background-color: #005f8a; /* Цвет кнопки при наведении */
+  }
+
+  /* Плавное поведение для вывода (показывания) блока */
+  #output {
+    display: none;
+    margin-top: 20px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 12px 24px;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    height: 30px;
+    line-height: 30px;
+    color: #000;
+    transition: opacity 0.3s ease-in-out;
+  }
+
+  #output.show {
+    display: inline-block;
+    opacity: 1;
+  }
+
+  /* Выровнять элементы в родительском контейнере для более красивого отображения */
+  .card-content {
+    background-color: rgba(255, 255, 255, 0.514);
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    max-width: 95%;
+    margin: 40px auto;
+    backdrop-filter: blur(6px);
+    color: #000;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  /* Изменения в медиазапросах для улучшения отображения на мобильных устройствах */
+  @media (max-width: 768px) {
+    nav {
+      height: 70px; /* Немного уменьшаем высоту на мобильных */
     }
+
+    nav button {
+      font-size: 28px; /* Немного уменьшаем размер кнопок на мобильных */
+    }
+  }
 </style>
 </head>
 <body>
