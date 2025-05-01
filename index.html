@@ -216,7 +216,18 @@
       pointer-events: auto;
       position: relative;
     }
-  </style>
+
+    /* Медиазапросы для мобильных устройств */
+    @media (max-width: 768px) {
+      nav {
+        height: 50px; /* Уменьшаем высоту меню на мобильных устройствах */
+      }
+
+      nav button {
+        font-size: 20px; /* Уменьшаем размер кнопок на мобильных устройствах */
+      }
+    }
+</style>
 </head>
 <body>
 
@@ -269,12 +280,12 @@
 </div>
 
 <!-- Нижнее меню -->
-<nav style="z-index: 1000; position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); border-top: 1px solid #cccccc23; display: flex; justify-content: space-around; align-items: center;">
-  <button onclick="showTab('message')">＋</button>
-<button onclick="showTab('profile')">👤</button>
-<button onclick="showTab('decoder')">🔁</button> <!-- центр -->
-<button onclick="showTab('gallery')">🖼</button>
-<button onclick="showTab('game')">🎮</button>
+<nav style="z-index: 1000; position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); border-top: 1px solid #cccccc23; display: flex; justify-content: space-around; align-items: center; padding: 0 10px;">
+  <button onclick="showTab('message')" style="font-size: 24px;">＋</button>
+  <button onclick="showTab('profile')" style="font-size: 24px;">👤</button>
+  <button onclick="showTab('decoder')" style="font-size: 24px;">🔁</button> <!-- центр -->
+  <button onclick="showTab('gallery')" style="font-size: 24px;">🖼</button>
+  <button onclick="showTab('game')" style="font-size: 24px;">🎮</button>
 </nav>
 
 </body>
