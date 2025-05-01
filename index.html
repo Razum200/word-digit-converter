@@ -41,26 +41,22 @@
     }
 
     #output {
-      display: none; /* Скрыт по умолчанию */
+      display: none;
       margin-top: 20px;
       font-size: 1.5em;
       font-weight: bold;
       border: 2px dashed #ccc;
       border-radius: 8px;
-      padding: 12px 24px; /* Это padding кнопки, аналогичное поле для #output */
+      padding: 12px 24px;
       background-color: #f9f9f9;
       min-width: 120px;
-      height: 30px; /* Если хотите точную высоту */
-      line-height: 30px; /* Выравнивание текста по центру */
-      color: #000; /* Явно указываем цвет текста (черный) */
-    }
-
-    button {
-      padding: 12px 24px; /* Оставляем кнопку как была */
+      height: 30px;
+      line-height: 30px;
+      color: #000;
     }
 
     #output.show {
-      display: inline-block; /* Показать, когда результат есть */
+      display: inline-block;
     }
 
     #user-info {
@@ -90,9 +86,11 @@
     }
 
     #owner-message {
-      font-weight: bold;
       font-size: 1.1em;
-      margin-top: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--text);
       display: none;
     }
 
@@ -106,6 +104,77 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 16px;
+    }
+
+    #tab-message {
+      background-image: url('beast_animation.gif');
+      background-size: cover; /* растягиваем изображение на весь контейнер */
+      background-position: center; /* центрируем изображение */
+      background-repeat: no-repeat; /* чтобы изображение не повторялось */
+      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+      display: flex;
+      justify-content: center;
+      align-items: center; /* выравнивание содержимого по центру */
+      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+    }
+
+    #tab-profile {
+      background-image: url('profile.webp');
+      background-size: cover; /* растягиваем изображение на весь контейнер */
+      background-position: center; /* центрируем изображение */
+      background-repeat: no-repeat; /* чтобы изображение не повторялось */
+      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+      display: flex;
+      justify-content: center;
+      align-items: center; /* выравнивание содержимого по центру */
+      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+    }
+
+    #tab-decoder {
+      background-image: url('83457.webp');
+      background-size: cover; /* растягиваем изображение на весь контейнер */
+      background-position: center; /* центрируем изображение */
+      background-repeat: no-repeat; /* чтобы изображение не повторялось */
+      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+      display: flex;
+      justify-content: center;
+      align-items: center; /* выравнивание содержимого по центру */
+      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+    }
+
+    #tab-game {
+      background-image: url('game.webp');
+      background-size: cover; /* растягиваем изображение на весь контейнер */
+      background-position: center; /* центрируем изображение */
+      background-repeat: no-repeat; /* чтобы изображение не повторялось */
+      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+      display: flex;
+      justify-content: center;
+      align-items: center; /* выравнивание содержимого по центру */
+      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+    }
+
+    #tab-gallery {
+      background-image: url('gallery2.webp');
+      background-size: cover; /* растягиваем изображение на весь контейнер */
+      background-position: center; /* центрируем изображение */
+      background-repeat: no-repeat; /* чтобы изображение не повторялось */
+      min-height: 100vh; /* обеспечиваем, чтобы контейнер занимал хотя бы всю высоту экрана */
+      display: flex;
+      justify-content: center;
+      align-items: center; /* выравнивание содержимого по центру */
+      color: #fff; /* если текст на фоне, нужно сделать его светлым, чтобы было видно */
+    }
+
+    .card-content {
+      background-color: rgba(255, 255, 255, 0.514);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      max-width: 95%;
+      margin: 40px auto;
+      backdrop-filter: blur(6px);
+      color: #000;
     }
 
     .link-card {
@@ -129,42 +198,81 @@
       font-size: 0.9em;
     }
 
-    #owner-message {
-      font-size: 1.1em;
-      font-weight: bold;
-      text-align: center;
-      margin-top: 20px;
-      color: var(--text);
+    .tab-page {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
     }
 
-    #owner-message a {
-      color: var(--button-bg);
-      text-decoration: none;
-    }
-
-    #owner-message a:hover {
-      text-decoration: underline;
+    .tab-page.active {
+      opacity: 1;
+      pointer-events: auto;
+      position: relative;
     }
   </style>
 </head>
 <body>
-  <h1>WHAT GIFT SAID?</h1>
-<h1>TEXT ↔ NYMBER</h1>
-<p id="user-info"></p>
-
-<input id="input" placeholder="Введите слово или число" oninput="convert()" />
-<br>
-<button onclick="convert()">Конвертировать</button>
-
-<p id="output"></p>
-
-<!-- Вот эта строка — сообщение "Напиши владельцу" -->
-<p id="owner-message" class="hidden">📬 Напиши владельцу:</p>
-
-<div id="links"></div>
 
 <div id="corner-info">
   <a href="https://t.me/giftsaid" target="_blank">Powered by Soooon<br>GIFT SAID GROUP<br>For ANON DAO</a>
 </div>
+
+<!-- Контейнеры вкладок -->
+<div class="tab-page" id="tab-decoder">
+  <div class="card-content">
+    <h1>WHAT GIFT SAID?</h1>
+    <h1>TEXT ↔ NYMBER</h1>
+    <p id="user-info"></p>
+
+    <input id="input" placeholder="Введите слово или номер подарка" oninput="convert()" />
+    <br>
+    <button onclick="convert()">Конвертировать</button>
+    <p id="output"></p>
+    <p id="owner-message" class="hidden">📬 Напиши владельцу:</p>
+    <div id="links"></div>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-message">
+  <div class="card-content">
+    <h2>Значение</h2>
+    <p>Тут будет дешифровщик по фону и модели (в разработке).</p>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-profile">
+  <div class="card-content">
+    <h2>Профиль</h2>
+    <p>Информация о пользователе <br>Сумма мощи вашего инвентаря подарков<br>Все ресурсы, которые вам положены за холд подарков<br>(в разработке).</p>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-gallery">
+  <div class="card-content">
+    <h2>Галерея</h2>
+    <p>Здесь будет выставка предметов,<br>просто вводи никнейм пользователя<br>и гуляй по его галлерее подарков <br>(в разработке).</p>
+  </div>
+</div>
+
+<div class="tab-page" id="tab-game">
+  <div class="card-content">
+    <h2>Игра</h2>
+    <p>PVP Мини-игра Сила/Ресурсы/Предметы <br>напрямую зависят от подарков в вашем инвентаре<br>(в разработке).</p>
+  </div>
+</div>
+
+<!-- Нижнее меню -->
+<nav style="z-index: 1000; position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background: var(--bg); border-top: 1px solid #cccccc23; display: flex; justify-content: space-around; align-items: center;">
+  <button onclick="showTab('message')">＋</button>
+<button onclick="showTab('profile')">👤</button>
+<button onclick="showTab('decoder')">🔁</button> <!-- центр -->
+<button onclick="showTab('gallery')">🖼</button>
+<button onclick="showTab('game')">🎮</button>
+</nav>
+
 </body>
 </html>
