@@ -71,7 +71,7 @@
     #corner-info {
       position: fixed;
       top: 10px;
-      right: 10px;
+      right: 25px;
       z-index: 999;
       font-size: 0.75em;
       line-height: 1.2em;
@@ -154,13 +154,23 @@
       border-radius: 16px;
       box-shadow:
         0 8px 24px rgba(0, 0, 0, 0.2),
-        0 0 20px rgba(0, 255, 255, 0.2); /* неоновый свет */
+        0 0 20px rgba(0, 255, 255, 0.2);
       max-width: 90%;
-      margin: 40px auto;
+      min-width: 350px;         /* Минимальная ширина */
+      min-height: 350px;        /* Минимальная высота */
+      margin: 10px auto 40px;
       backdrop-filter: blur(8px) saturate(120%);
       color: #fff;
       max-height: 60vh;
       overflow-y: auto;
+    }
+
+    #tab-message .card-content,
+    #tab-profile .card-content,
+    #tab-gallery .card-content,
+    #tab-game .card-content {
+      text-align: left;
+      padding-left: 24px;
     }
   
     .link-card {
