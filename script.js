@@ -150,3 +150,24 @@ window.addEventListener('DOMContentLoaded', () => {
   const last = localStorage.getItem('lastTab') || 'decoder';
   showTab(last);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('input');
+    input.addEventListener('focus', () => {
+      setTimeout(() => {
+        input.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'
+        });
+      }, 300); // Ждём пока появится клавиатура
+    });
+  });
+
+window.addEventListener('resize', () => {
+  const nav = document.querySelector('nav');
+  if (window.innerHeight < 500) {
+    nav.style.display = 'none'; // клавиатура открыта
+  } else {
+    nav.style.display = 'flex'; // клавиатура скрыта
+  }
+});
