@@ -233,10 +233,11 @@
     padding: 0 15px;
   }
 
-  nav button {
-  width: 120px;
-  height: 90px;
-  font-size: 40px;
+  /* Базовые стили — для ПК */
+nav button {
+  width: 70px;
+  height: 70px;
+  font-size: 28px;
   background-color: var(--button-bg);
   color: var(--button-text);
   border: none;
@@ -246,6 +247,15 @@
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
+}
+
+/* Мобильная версия — увеличиваем всё */
+@media (max-width: 600px) {
+  nav button {
+    width: 120px;
+    height: 120px;
+    font-size: 40px;
+  }
 }
 
   nav button:hover {
@@ -280,7 +290,7 @@
     padding: 20px;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    max-width: 95%;
+    max-width: 90%;
     margin: 40px auto;
     backdrop-filter: blur(6px);
     color: #000;
