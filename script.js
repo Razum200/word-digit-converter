@@ -159,6 +159,14 @@ function randomGlitch(targetSelector) {
   }, 2000); // каждые 2 секунды есть шанс "сбоя"
 }
 
+function openInfo() {
+  document.getElementById('info-modal').classList.remove('hidden');
+}
+
+function closeInfo() {
+  document.getElementById('info-modal').classList.add('hidden');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   randomGlitch('.glitch-random');
 });
