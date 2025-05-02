@@ -66,12 +66,12 @@
     #user-info {
       position: relative;
       font-size: 1.2em;
-      color: #242907;
+      color: #38145e;
       text-shadow: 0 0 2px #00ffff, 0 0 5px #00ffff;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      animation: glitch-main 2s infinite;
+      animation: glitch-main 4s infinite;
     }
   
     #user-info::before,
@@ -88,12 +88,12 @@
     }
 
     #user-info::before {
-      animation: glitch-before 1.2s infinite;
+      animation: glitch-before 2.2s infinite;
       color: #ff00c8;
     }
 
     #user-info::after {
-      animation: glitch-after 1.2s infinite;
+      animation: glitch-after 2.2s infinite;
       color: #00ff6a;
     }
 
@@ -136,7 +136,7 @@
       font-family: 'Courier New', monospace;
       pointer-events: auto; /* чтобы не мешал кликам */
       opacity: 0.8;
-      animation: glitch 15s infinite;
+      animation: glitch 18s infinite;
     }
 
     #corner-info a {
@@ -189,9 +189,12 @@
       color: #fff;
     }
   
-    #tab-message,
+    #tab-message {
+      background-image: url('bgWIKI.webp');
+    }
+
     #tab-profile {
-      background-image: url('beast_animation.gif');
+      background-image: url('bgPROFILE.webp');
     }
 
 
@@ -269,6 +272,95 @@
       padding: 0;
 
     }
+
+    .glitch-hover {
+      position: relative;
+      font-weight: bold;
+      color: #0ff;
+    }
+
+    .glitch-hover::before,
+    .glitch-hover::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      z-index: -1;
+      opacity: 0;
+    }
+
+    .glitch-hover:hover::before,
+    .glitch-hover:hover::after {
+      opacity: 1;
+      animation: glitchTop 0.5s infinite, glitchBottom 0.5s infinite;
+    }
+
+    .glitch-hover:hover {
+      animation: glitch 0.5s infinite;
+    }
+
+    /* Используем предыдущие @keyframes glitch, glitchTop, glitchBottom */
+
+    .glitch-blink {
+      position: relative;
+      color: rgb(242, 104, 5);
+      font-weight: bold;
+      animation: glitch 4s infinite;
+    }
+
+    .glitch-blink::before,
+    .glitch-blink::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      color: #f0f;
+      z-index: -1;
+    }
+
+    .glitch-blink::before {
+      animation: glitchTop 2s infinite linear;
+      color: red;
+    }
+
+    .glitch-blink::after {
+      animation: glitchBottom 1.5s infinite linear;
+      color: blue;
+    }
+
+    @keyframes glitch {
+      0% { transform: none; opacity: 1; }
+      20% { transform: translate(-2px, 2px); opacity: 0.8; }
+      40% { transform: translate(2px, -1px); opacity: 0.4; }
+      60% { transform: translate(-1px, 1px); opacity: 0.6; }
+      80% { transform: translate(1px, 0); opacity: 0.9; }
+      100% { transform: none; opacity: 1; }
+    }
+
+    @keyframes glitchTop {
+      0% { clip-path: inset(0 0 90% 0); transform: translate(-2px, -2px); }
+      20% { clip-path: inset(0 0 80% 0); transform: translate(2px, -1px); }
+      40% { clip-path: inset(0 0 70% 0); transform: translate(-1px, -2px); }
+      60% { clip-path: inset(0 0 80% 0); transform: translate(1px, -1px); }
+      100% { clip-path: inset(0 0 90% 0); transform: none; }
+    }
+
+    @keyframes glitchBottom {
+      0% { clip-path: inset(90% 0 0 0); transform: translate(2px, 2px); }
+      20% { clip-path: inset(80% 0 0 0); transform: translate(-2px, 1px); }
+      40% { clip-path: inset(70% 0 0 0); transform: translate(1px, 2px); }
+      60% { clip-path: inset(80% 0 0 0); transform: translate(-1px, 1px); }
+      100% { clip-path: inset(90% 0 0 0); transform: none; }
+    }
+
+    .glitch-hover:hover,
+    .glitch-hover:active {
+      animation: glitch-hover 0.3s steps(2, end) infinite;
+    }
   
     .tab-page.active {
       opacity: 1;
@@ -335,11 +427,14 @@ nav button:active {
 <!-- Контейнеры вкладок -->
 <div class="tab-page" id="tab-decoder">
   <div class="card-content">
-    <h1>WHAT GIFT SAID?</h1>
+    <h1>
+      <span class="glitch-random glitch-hover" data-text="WHAT">WHAT</span> GIFT SAID
+      <span class="glitch-random glitch-hover" data-text="?">?</span>
+    </h1>
     <h1>TEXT ↔ NYMBER</h1>
     <p id="user-info" data-text="8 CLUB Anon HODL 1337">8 CLUB Anon HODL 1337</p>
 
-    <input id="input" placeholder="Введите слово или номер подарка" oninput="convert()" />
+    <input id="input" placeholder="Введи слово или номер подарка" oninput="convert()" />
     <br>
     <button onclick="convert()">Конвертировать</button>
     <p id="output"></p>
@@ -350,29 +445,64 @@ nav button:active {
 
 <div class="tab-page" id="tab-message">
   <div class="card-content">
-    <h2>Значение</h2>
-    <p>Тут будет дешифровщик по фону и модели (в разработке).</p>
+    <h2>WIKI GIFT's</h2>
+    <p>Добро пожаловать в энциклопедию подарков GIFT SAID.</p>
+    <ul>
+      <li><strong>Значение и расшифровка</strong> атрибутов подарка</li>
+      <li>На основе номера, модели, узора и фона будет определяться <strong>редкость и сила</strong> каждого предмета</li>
+      <li>Уникальные сочетания (например, номер <code>#1337</code> и жёлтая палитра) могут сделать подарок <strong>легендарным</strong></li>
+      <li>Анализ и дешифровка — <em>в разработке</em></li>
+    </ul>
+    <p>Следите за обновлениями — ваши подарки могут оказаться куда ценнее, чем вы думали!</p>
   </div>
 </div>
 
 <div class="tab-page" id="tab-profile">
   <div class="card-content">
     <h2>Профиль</h2>
-    <p>Информация о пользователе <br>Сумма мощи вашего инвентаря подарков<br>Все ресурсы, которые вам положены за холд подарков<br>(в разработке).</p>
-  </div>
+    <p>Ваш личный профиль содержит информацию о подарках и ресурсах, которые вы получаете за их хранение. В будущем эта вкладка будет включать:</p>
+    <ul>
+        <li><strong>Иконку или изображение подарков</strong> — визуальное представление ваших подарков.</li>
+        <li><strong>Список текущих подарков</strong> с возможностью подробного просмотра, включая порядковые номера и их ценность.</li>
+        <li><strong>Графическое представление общей мощности инвентаря</strong> — отображение общей силы ваших подарков через прогресс-бар или цифры.</li>
+        <li><strong>Информация о получаемых ресурсах</strong> — бонусы и ресурсы, которые вы получаете за холд подарков (раздел в разработке).</li>
+    </ul>
+    <p>Эта информация будет помогать вам лучше понять ценность вашего инвентаря и максимизировать ресурсы, которые вы можете получить!</p>
+</div>
 </div>
 
 <div class="tab-page" id="tab-gallery">
   <div class="card-content">
     <h2>Галерея</h2>
-    <p>Здесь будет выставка предметов,<br>просто вводи никнейм пользователя<br>и гуляй по его галлерее подарков <br>(в разработке).</p>
+    <p>Пройдитесь по коллекциям подарков других пользователей!</p>
+    <ul>
+      <li><strong>Вводите никнейм</strong> и попадайте в его галерею подарков.</li>
+      <li>Просмотр подарков в <strong>обзорном режиме</strong>: маленькие изображения с номерами.</li>
+      <li>При клике на подарок — подробная расшифровка <strong>по GLS1337</strong>: модель, узор, фон.</li>
+      <li>Каждый подарок может иметь скрытые ценности: комбинации номеров, которые повышают его редкость.</li>
+      <li><em>Дешифровщик и анализация — в разработке</em></li>
+    </ul>
+    <p>Галерея подарков станет вашим личным путеводителем в мире ценностей и редкости каждого подарка!</p>
   </div>
 </div>
 
 <div class="tab-page" id="tab-game">
   <div class="card-content">
     <h2>Игра</h2>
-    <p>PVP Мини-игра Сила/Ресурсы/Предметы <br>напрямую зависят от подарков в вашем инвентаре<br>(в разработке).</p>
+    <p>PVP мини-игра, где подарки становятся вашей силой. *(в разработке)*</p>
+    <ul>
+      <li>Закрепите 7 активных подарков из инвентаря</li>
+      <li>Каждый подарок превращается в пиксели — визуальное представление вашей силы</li>
+      <li>Цвет пикселей:
+        <ul>
+          <li><strong>Черный</strong> — крепость и защита</li>
+          <li><strong>Белый</strong> — слабость</li>
+          <li><strong>Красный</strong> — урон (например, подарок BEAST 83457 по GLS1337)</li>
+        </ul>
+      </li>
+      <li>Сражайтесь с другими игроками и докажите силу своей коллекции</li>
+    </ul>
+    <p>Здесь появится арена, где каждый ваш подарок станет оружием. Подготовьтесь!</p>
   </div>
 </div>
 
@@ -380,7 +510,7 @@ nav button:active {
 <nav>
   <button onclick="showTab('message')" style="font-size: 24px;">＋</button>
   <button onclick="showTab('profile')" style="font-size: 24px;">👤</button>
-  <button onclick="showTab('decoder')" style="font-size: 24px;">🔁</button> <!-- центр -->
+  <button onclick="showTab('decoder')" style="font-size: 24px;">🔎</button> <!-- центр -->
   <button onclick="showTab('gallery')" style="font-size: 24px;">🖼</button>
   <button onclick="showTab('game')" style="font-size: 24px;">🎮</button>
 </nav>
