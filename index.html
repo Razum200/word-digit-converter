@@ -63,9 +63,39 @@
     }
   
     #user-info {
-      font-size: 1em;
-      color: rgb(29, 28, 28);
+      position: relative;
+      font-size: 1.2em;
+      color: #11a5a5;
+      text-shadow: 0 0 2px #00ffff, 0 0 5px #00ffff;
       margin-bottom: 10px;
+      animation: glitch 1.5s infinite;
+    }
+
+    @keyframes glitch {
+      0% {
+        transform: translate(0);
+        opacity: 1;
+      }
+      20% {
+        transform: translate(-2px, 2px);
+        opacity: 0.9;
+      }
+      40% {
+        transform: translate(2px, -1px);
+        opacity: 1;
+      }
+      60% {
+        transform: translate(-1px, 1px);
+        opacity: 0.8;
+      }
+      80% {
+        transform: translate(1px, -2px);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(0);
+        opacity: 1;
+      }
     }
 
     #corner-info {
@@ -134,9 +164,13 @@
     }
   
     #tab-message,
-    #tab-profile,
-    #tab-decoder {
+    #tab-profile {
       background-image: url('beast_animation.gif');
+    }
+
+
+    #tab-decoder {
+      background-image: url('beast_pixel_art_300.png');
     }
   
     #tab-game {
@@ -222,16 +256,20 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100%;
+  right: 0;
   height: 80px;
-  background-color: rgba(20, 20, 20, 0.8); /* полупрозрачный */
-  backdrop-filter: blur(10px); /* стеклянный эффект */
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95), rgba(0, 0, 0, 0.85));
+  backdrop-filter: blur(12px) saturate(150%);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 -2px 15px rgba(0, 255, 255, 0.25),
+    0 0 20px rgba(0, 255, 255, 0.15) inset;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 10px;
   z-index: 1000;
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 16px 16px 0 0;
 }
 
 nav button {
@@ -239,7 +277,7 @@ nav button {
   height: 60px;
   font-size: 24px;
   background-color: #111;
-  color: #fff;
+  color: #f9f3f3;
   border: 2px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
   cursor: pointer;
@@ -313,7 +351,7 @@ nav button:active {
 </div>
 
 <!-- Нижнее меню -->
-<nav style="z-index: 1000; position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: var(--bg); border-top: 1px solid #cccccc23; display: flex; justify-content: space-around; align-items: center; padding: 0 10px;">
+<nav>
   <button onclick="showTab('message')" style="font-size: 24px;">＋</button>
   <button onclick="showTab('profile')" style="font-size: 24px;">👤</button>
   <button onclick="showTab('decoder')" style="font-size: 24px;">🔁</button> <!-- центр -->
