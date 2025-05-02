@@ -25,7 +25,8 @@
     input {
       width: 90%;
       padding: 12px;
-      font-size: 1.2em;
+      font-size: 0.8em; /* уменьшаем размер текста */
+      font-family: 'Courier New', monospace; /* моноширинный шрифт */
       border-radius: 8px;
       border: 1px solid #ccc;
       margin-bottom: 10px;
@@ -65,13 +66,14 @@
     #user-info {
       position: relative;
       font-size: 1.2em;
-      color: #00ffff;
+      color: #dcfb15;
       text-shadow: 0 0 2px #00ffff, 0 0 5px #00ffff;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      animation: glitch-main 1.2s infinite;
+      animation: glitch-main 2s infinite;
     }
+  
 
     #user-info::before,
     #user-info::after {
@@ -336,7 +338,7 @@ nav button:active {
   <div class="card-content">
     <h1>WHAT GIFT SAID?</h1>
     <h1>TEXT ↔ NYMBER</h1>
-    <p id="user-info" data-text="888 Anon HODL 1337">888 Anon HODL 1337</p>
+    <p id="user-info" data-text="8 CLUB Anon HODL 1337">8 CLUB Anon HODL 1337</p>
 
     <input id="input" placeholder="Введите слово или номер подарка" oninput="convert()" />
     <br>
