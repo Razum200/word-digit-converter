@@ -146,6 +146,23 @@ function showTab(tab) {
   }
 }
 
+function randomGlitch(targetSelector) {
+  const elements = document.querySelectorAll(targetSelector);
+
+  setInterval(() => {
+    elements.forEach(el => {
+      if (Math.random() > 0.7) {
+        el.classList.add('glitch-blink');
+        setTimeout(() => el.classList.remove('glitch-blink'), 500); // сбой длится 0.5с
+      }
+    });
+  }, 2000); // каждые 2 секунды есть шанс "сбоя"
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  randomGlitch('.glitch-random');
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   const last = localStorage.getItem('lastTab') || 'decoder';
   showTab(last);
