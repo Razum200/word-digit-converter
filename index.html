@@ -369,6 +369,61 @@
       width: 100%;
       height: 100%;
     }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal.hidden {
+      display: none;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 600px;
+      color: white;
+      font-family: monospace;
+      line-height: 1.5;
+    }
+
+    .modal-content h2 {
+      margin-top: 0;
+      color: #fff;
+    }
+
+    .modal-content code {
+      background: #222;
+      padding: 2px 5px;
+      border-radius: 4px;
+      color: #0f0;
+    }
+
+    .gls-list {
+      list-style: none;
+      padding: 0;
+      font-family: monospace;
+    }
+
+    .gls-list li {
+      padding: 2px 0;
+    }
+
+    .close-button {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+    }
   
     nav {
   position: fixed;
@@ -428,7 +483,7 @@ nav button:active {
 <div class="tab-page" id="tab-decoder">
   <div class="card-content">
     <h1>
-      <span class="glitch-random glitch-hover" data-text="WHAT">WHAT</span> GIFT SAID
+      <span class="glitch-random glitch-hover" data-text="WHAT" onclick="openInfo()">WHAT</span> GIFT SAID
       <span class="glitch-random glitch-hover" data-text="?">?</span>
     </h1>
     <h1>TEXT ↔ NYMBER</h1>
@@ -503,6 +558,29 @@ nav button:active {
       <li>Сражайтесь с другими игроками и докажите силу своей коллекции</li>
     </ul>
     <p>Здесь появится арена, где каждый ваш подарок станет оружием. Подготовьтесь!</p>
+  </div>
+</div>
+
+<div id="info-modal" class="modal hidden">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeInfo()">×</span>
+    <h2>GLS1337 — Язык Подарков</h2>
+    <p><strong>GIFT LEET SPEAK 1337</strong> — специальный алфавит, на котором "разговаривают" подарки GIFT SAID. Их порядковые номера скрывают слова с помощью следующего кода:</p>
+    <ul class="gls-list">
+      <li>1 = L</li>
+      <li>2 = Z</li>
+      <li>3 = E</li>
+      <li>4 = A</li>
+      <li>5 = S</li>
+      <li>6 = G</li>
+      <li>7 = T</li>
+      <li>8 = B</li>
+      <li>9 = J</li>
+      <li>0 = O</li>
+    </ul>
+    <p>Если номер подарка можно расшифровать в осмысленное слово — это <strong>сигнал о его редкости и силе</strong>.  
+    Примеры: <code>#1337 → LEET</code>, <code>#83457 → BEAST</code>, <code>#505 → SOS</code></p>
+    <p>GLS1337 — это ключ к пониманию тайной сущности вашего инвентаря 🎁</p>
   </div>
 </div>
 
