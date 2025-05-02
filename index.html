@@ -65,37 +65,62 @@
     #user-info {
       position: relative;
       font-size: 1.2em;
-      color: #11a5a5;
+      color: #00ffff;
       text-shadow: 0 0 2px #00ffff, 0 0 5px #00ffff;
       margin-bottom: 10px;
-      animation: glitch 1.5s infinite;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      animation: glitch-main 1.2s infinite;
     }
 
-    @keyframes glitch {
-      0% {
-        transform: translate(0);
-        opacity: 1;
-      }
-      20% {
-        transform: translate(-2px, 2px);
-        opacity: 0.9;
-      }
-      40% {
-        transform: translate(2px, -1px);
-        opacity: 1;
-      }
-      60% {
-        transform: translate(-1px, 1px);
-        opacity: 0.8;
-      }
-      80% {
-        transform: translate(1px, -2px);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(0);
-        opacity: 1;
-      }
+    #user-info::before,
+    #user-info::after {
+      content: attr(id);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      overflow: hidden;
+      color: #ff00c8;
+      z-index: -1;
+      opacity: 0.7;
+    }
+
+    #user-info::before {
+      animation: glitch-before 1.2s infinite;
+      color: #ff00c8;
+    }
+
+    #user-info::after {
+      animation: glitch-after 1.2s infinite;
+      color: #00ff6a;
+    }
+
+    @keyframes glitch-main {
+      0% { transform: none; }
+      20% { transform: skew(-0.5deg, -0.9deg); }
+      40% { transform: skew(0.8deg, 0.2deg); }
+      60% { transform: skew(-0.3deg, 0.4deg); }
+      80% { transform: skew(0.1deg, -0.1deg); }
+      100% { transform: none; }
+    }
+
+    @keyframes glitch-before {
+      0% { transform: translate(-2px, -2px); opacity: 0.6; }
+      20% { transform: translate(2px, 1px); }
+      40% { transform: translate(-1px, 2px); opacity: 0.8; }
+      60% { transform: translate(1px, -1px); }
+      80% { transform: translate(-2px, 1px); }
+      100% { transform: translate(0); opacity: 0.7; }
+    }
+
+    @keyframes glitch-after {
+      0% { transform: translate(2px, 2px); opacity: 0.6; }
+      20% { transform: translate(-2px, -1px); }
+      40% { transform: translate(1px, -2px); opacity: 0.8; }
+      60% { transform: translate(-1px, 1px); }
+      80% { transform: translate(2px, -1px); }
+      100% { transform: translate(0); opacity: 0.7; }
     }
 
     #corner-info {
