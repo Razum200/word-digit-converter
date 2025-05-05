@@ -167,6 +167,44 @@ function closeInfo() {
   document.getElementById('info-modal').classList.add('hidden');
 }
 
+function openGameConcept() {
+  const iframe = document.getElementById('game-frame');
+  const cardContent = document.querySelector('#tab-game .card-content');
+  const buttonWrapper = document.getElementById('game-concept-button-wrapper');
+
+  if (!iframe || !cardContent || !buttonWrapper) {
+    console.error("Один из элементов не найден");
+    return;
+  }
+
+  // Показать игру
+  iframe.src = 'giftgameConcept/index.html';
+  iframe.style.display = 'block';
+
+  // Скрыть контент и кнопку
+  cardContent.style.display = 'none';
+  buttonWrapper.style.display = 'none';
+}
+
+function closeGameConcept() {
+  const iframe = document.getElementById('game-frame');
+  const cardContent = document.querySelector('#tab-game .card-content');
+  const buttonWrapper = document.getElementById('game-concept-button-wrapper');
+
+  if (!iframe || !cardContent || !buttonWrapper) {
+    console.error("Один из элементов не найден");
+    return;
+  }
+
+  // Закрываем игру
+  iframe.src = '';
+  iframe.style.display = 'none';
+
+  // Показываем контент и кнопку
+  cardContent.style.display = 'block';
+  buttonWrapper.style.display = 'block';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   randomGlitch('.glitch-random');
 });
