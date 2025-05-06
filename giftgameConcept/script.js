@@ -23,7 +23,7 @@ function generateGrid(presents) {
     }
 
     presents.forEach(name => {
-        const stats = giftStats[name];
+        const stats = glsStats[name];
         if (!stats) return;
 
         for (let i = 0; i < stats.attack; i++) grid.push({ type: "🟥", hp: 10, defense: 1 });
@@ -145,7 +145,7 @@ function getSelectedGifts(playerId) {
     const container = document.getElementById(`${playerId}-selects`);
     return Array.from(container.querySelectorAll("select"))
         .map(sel => sel.value)
-        .filter(value => value && giftStats[value]); // фильтруем пустые и невалидные
+        .filter(value => value && glsStats[value]); // фильтруем пустые и невалидные
 }
 
 // Она будет обновлять статистику игрока, например, атаку, защиту и здоровье в зависимости от выбранных подарков
@@ -181,7 +181,7 @@ function createGiftSelectors(playerId) {
     for (let i = 0; i < 6; i++) {
         const select = document.createElement("select");
 
-        Object.keys(giftStats).forEach(giftName => {
+        Object.keys(glsStats).forEach(giftName => {
             const option = document.createElement("option");
             option.value = giftName;
             option.textContent = giftName;
@@ -287,7 +287,7 @@ function calculateTotalStats(presents) {
     let totalHP = 0;
 
     presents.forEach(name => {
-        const stats = giftStats[name];
+        const stats = glsStats[name];
         if (stats) {
             totalAttack += stats.attack;
             totalDefense += stats.defense;
@@ -490,7 +490,7 @@ function startFreeForAllBattle() {
 
 function randomizeSelects(playerId) {
     const selects = document.querySelectorAll(`#${playerId}-selects select`);
-    const giftNames = Object.keys(giftStats);
+    const giftNames = Object.keys(glsStats);
     selects.forEach(select => {
       const rnd = giftNames[Math.floor(Math.random() * giftNames.length)];
       select.value = rnd;
