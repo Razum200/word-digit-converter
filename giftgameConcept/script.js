@@ -1,4 +1,20 @@
-// Генерация сетки для игрока
+// В самом верху script.js, ещё до любых функций
+let logLines = [];
+
+// Очистить лог
+function clearLog() {
+  logLines = [];
+  document.getElementById('battleLog').innerText = '';
+}
+
+// Добавить новую строку и отобразить
+function updateLog(line) {
+  logLines.push(line);
+  if (logLines.length > 10) logLines.shift();       // храним последние 10 строк
+  document.getElementById('battleLog').innerText = logLines.join('\n');
+}
+
+// Генерация сетки для игрока 🧱🧱🧱🧱🧱🧱
 function generateGrid(presents) {
     let grid = [];
 
@@ -44,8 +60,7 @@ function renderGrid(grid, playerId) {
         `;
         gridContainer.appendChild(pixelDiv);
 
-        // Привязываем DOM-элемент к пикселю для последующего доступа
-        pixel.domElement = pixelDiv;
+        // 
     });
 }
 
@@ -56,10 +71,10 @@ function fight(pixA, pixB) {
         "⬛": 6,
         "⬜": 1
     };
-    
+
+    // Визуальный эффект удара
     pixA.domElement?.classList.add("hit-flash");
     pixB.domElement?.classList.add("hit-flash");
-
     setTimeout(() => {
         pixA.domElement?.classList.remove("hit-flash");
         pixB.domElement?.classList.remove("hit-flash");
@@ -71,22 +86,25 @@ function fight(pixA, pixB) {
     const effectiveDmgToA = Math.max(0, dmgB - (pixA.defense || 0));
     const effectiveDmgToB = Math.max(0, dmgA - (pixB.defense || 0));
 
-    // Анимация полёта снарядов
-    if (dmgA > 0 && pixA.domElement && pixB.domElement) {
+    // Анимация полёта снарядов (только если живы и наносят урон)
+    if (dmgA > 0 && pixA.hp > 0 && pixB.hp > 0 && pixA.domElement && pixB.domElement) {
         animateProjectile(pixA.domElement, pixB.domElement);
     }
-    if (dmgB > 0 && pixB.domElement && pixA.domElement) {
+    if (dmgB > 0 && pixA.hp > 0 && pixB.hp > 0 && pixB.domElement && pixA.domElement) {
         animateProjectile(pixB.domElement, pixA.domElement);
     }
 
+    // Применение урона
     pixA.hp -= effectiveDmgToA;
     pixB.hp -= effectiveDmgToB;
 
-    // Если HP <= 0, заменим символ на черепок
+    // Если кто-то умер — отрисовать череп
     if (pixA.domElement && pixA.hp <= 0) {
+        pixA.hp = 0;
         pixA.domElement.innerHTML = `💀<div class="hp-bar" style="width: 0%"></div>`;
     }
     if (pixB.domElement && pixB.hp <= 0) {
+        pixB.hp = 0;
         pixB.domElement.innerHTML = `💀<div class="hp-bar" style="width: 0%"></div>`;
     }
 
@@ -115,7 +133,9 @@ function fight(pixA, pixB) {
     return {
         result,
         updatedA: aAlive ? pixA : null,
-        updatedB: bAlive ? pixB : null
+        updatedB: bAlive ? pixB : null,
+        hpA: pixA.hp,
+        hpB: pixB.hp
     };
 }
 
@@ -127,6 +147,31 @@ function getSelectedGifts(playerId) {
         .map(sel => sel.value)
         .filter(value => value && giftStats[value]); // фильтруем пустые и невалидные
 }
+
+// Она будет обновлять статистику игрока, например, атаку, защиту и здоровье в зависимости от выбранных подарков
+function updatePlayerStats(playerId, current, initial) {
+    const { attack, defense, hp } = current;
+    // totalInit — сумма изначальных блоков ATK+DEF+HP
+    const totalInit = initial.attack + initial.defense + initial.hp || 1;
+  
+    // считаем каждую часть пропорционально своему изначальному числу
+    const atkPct = Math.round((attack  / totalInit) * 100);
+    const defPct = Math.round((defense / totalInit) * 100);
+    const hpPct  = Math.round((hp      / totalInit) * 100);
+  
+    const statsEl = document.getElementById(`${playerId}-stats`);
+    statsEl.innerHTML = `
+      <div class="combined-bar">
+        <div class="seg atk" style="width: ${atkPct}%"></div>
+        <div class="seg def" style="width: ${defPct}%"></div>
+        <div class="seg hp"  style="width: ${hpPct}%"></div>
+      </div>
+      <div class="stat-label">
+        ATK: ${attack} | DEF: ${defense} | HP: ${hp}
+      </div>
+    `;
+    statsEl.style.display = 'block';
+  }
 
 // Создание селекторов подарков для каждого игрока
 function createGiftSelectors(playerId) {
@@ -145,32 +190,22 @@ function createGiftSelectors(playerId) {
 
         // Добавляем обработчик на изменение выбора
         select.addEventListener("change", function () {
-            // Получаем выбранные подарки и обновляем статистику
             const newPresents = getSelectedGifts(playerId);
-            updatePlayerStats(playerId, newPresents); // обновляем статистику
-        });
+           // пересчитываем «текущие» статы из выбранных подарков
+           const curr = calculateTotalStats(newPresents);
+           // обновляем бар, передавая current и сохранённый initial
+           updatePlayerStats(playerId, curr, initialStats[playerId]);
+            // 2) генерируем новую сетку
+            const newGrid = generateGrid(newPresents);
+            // 3) перерисовываем грид в нужном контейнере
+            renderGrid(newGrid, playerId);
+          });
 
         container.appendChild(select);
     }
 }
 
-// Сброс битвы
-function resetBattle() {
-    document.getElementById("battleLog").textContent = "";
-    const playerAStats = document.getElementById("playerA-stats");
-    const playerBStats = document.getElementById("playerB-stats");
-    playerAStats.innerHTML = "";
-    playerBStats.innerHTML = "";
 
-    // сбрасываем выбранные подарки
-    const selectsA = document.querySelectorAll("#playerA-selects select");
-    const selectsB = document.querySelectorAll("#playerB-selects select");
-    selectsA.forEach(select => select.value = giftNames[0]);
-    selectsB.forEach(select => select.value = giftNames[0]);
-
-    updatePlayerStats("playerA");
-    updatePlayerStats("playerB");
-}
 
 function animateProjectile(fromEl, toEl) {
     return new Promise(resolve => {
@@ -220,10 +255,7 @@ function showProjectile(fromEl, toEl, symbol, callback) {
     projectile.style.left = `${startPos.left + fromEl.offsetWidth / 2}px`;
     projectile.style.top = `${startPos.top + fromEl.offsetHeight / 2}px`;
 
-    // Анимация снаряда с кривой Безье для плавности
     
-    console.log("From:", startPos.left, startPos.top, "To:", endPos.left, endPos.top);
-
     projectile.animate(
         [
             { transform: "translate(0, 0)" }, 
@@ -242,57 +274,7 @@ function showProjectile(fromEl, toEl, symbol, callback) {
     }, 1000); // Задержка, соответствующая времени анимации
 }
 
-// Шаг битвы
-function runBattleStep() {
-    if (gridA.length === 0 || gridB.length === 0) {
-        const winner = gridA.length > 0 ? "🎉 Победа Игрока A" : 
-                       gridB.length > 0 ? "🎉 Победа Игрока B" :
-                       "🤝 Ничья!";
-        updateLog(winner);
-        return;
-    }
 
-    const pixA = gridA.shift();
-    const pixB = gridB.shift();
-
-    const { result, updatedA, updatedB } = fight(pixA, pixB);
-
-    if (updatedA) gridA.push(updatedA);
-    if (updatedB) gridB.push(updatedB);
-
-    const aEl = pixA?.domElement;
-    const bEl = pixB?.domElement;
-
-    
-
-    // Определяем, кто атакует
-    const attacker = pixA && pixA.hp > 0 ? "A" : pixB && pixB.hp > 0 ? "B" : null;
-
-    let fromEl, toEl, symbol;
-    if (attacker === "A") {
-        fromEl = aEl;
-        toEl = bEl;
-        symbol = pixA.type;
-    } else if (attacker === "B") {
-        fromEl = bEl;
-        toEl = aEl;
-        symbol = pixB.type;
-    } else {
-        updateLog(`Раунд ${round++}: A:${pixA.type} vs B:${pixB.type} → ${result}`);
-        setTimeout(runBattleStep, 1000);
-        return;
-    }
-
-    showProjectile(fromEl, toEl, symbol, () => {
-        updateLog(`Раунд ${round++}: A:${pixA.type} vs B:${pixB.type} → ${result}`);
-
-        // Перерисовываем только после окончания анимации
-        renderGrid(gridA, "playerA");
-        renderGrid(gridB, "playerB");
-
-        setTimeout(runBattleStep, 1000);
-    });
-}
 
 // Функция для расчета общей силы игрока
 function calculateTotalStats(presents) {
@@ -320,151 +302,100 @@ function calculateTotalStats(presents) {
     };
 }
 
-// Функция для обновления визуальных элементов
-function updatePlayerStats(playerId, presents) {
-    const stats = calculateTotalStats(presents);
 
-    // Проверяем, что элементы существуют перед обновлением
-    const atkElement = document.getElementById(`${playerId}-atk`);
-    const defenseElement = document.getElementById(`${playerId}-defense`);
-    const hpElement = document.getElementById(`${playerId}-hp`);
-    const atkBarElement = document.getElementById(`${playerId}-atk-bar`);
-    const defenseBarElement = document.getElementById(`${playerId}-defense-bar`);
-    const hpBarElement = document.getElementById(`${playerId}-hp-bar`);
-
-    if (atkElement && defenseElement && hpElement && atkBarElement && defenseBarElement && hpBarElement) {
-        // Обновляем числовые значения
-        atkElement.innerText = `АТК: ${stats.attack}`;
-        defenseElement.innerText = `ЗАЩ: ${stats.defense}`;
-        hpElement.innerText = `HP: ${stats.hp}`;
-
-        // Обновляем полоски
-        atkBarElement.style.width = `${Math.min(stats.attack, 100)}%`;
-        defenseBarElement.style.width = `${Math.min(stats.defense, 100)}%`;
-        hpBarElement.style.width = `${Math.min(stats.hp, 100)}%`;
-    }
-}
-
-// Функция для рендеринга интерфейса игрока
-function renderPlayerInterface(playerId, presents) {
-    const stats = calculateTotalStats(presents);
-    return `
-        <p id="${playerId}-atk">АТК: ${stats.attack}</p>
-        <div id="${playerId}-atk-bar" class="stat-bar"></div>
-        <p id="${playerId}-defense">ЗАЩ: ${stats.defense}</p>
-        <div id="${playerId}-defense-bar" class="stat-bar"></div>
-        <p id="${playerId}-hp">HP: ${stats.hp}</p>
-        <div id="${playerId}-hp-bar" class="stat-bar"></div>
-    `;
-}
-
-// Функция, которая будет вызываться при изменении подарков
-function onGiftsChange(playerId, newPresents) {
-    updatePlayerStats(playerId, newPresents);
-}
-
-// Логирование событий
-const logLines = [];
-function updateLog(newLine) {
-    logLines.push(newLine);
-    if (logLines.length > 3) logLines.shift(); // только 3 последних
-    document.getElementById("battleLog").innerText = logLines.join("\n");
-}
-
-// Старт битвы
-let gridA = [];
-let gridB = [];
-let round = 1;
-function startBattle() {
-    const playerAGifts = getSelectedGifts("playerA");
-    const playerBGifts = getSelectedGifts("playerB");
-
-    // Рендерим интерфейс статистики для игроков
-    const playerAInterface = renderPlayerInterface("playerA", playerAGifts);
-    const playerBInterface = renderPlayerInterface("playerB", playerBGifts);
-
-    // Вставляем интерфейсы на страницу (например, в блок с id playerA-stats и playerB-stats)
-    document.getElementById("playerA-stats").innerHTML = playerAInterface;
-    document.getElementById("playerB-stats").innerHTML = playerBInterface;
-
-    // Обновляем статистику игроков
-    updatePlayerStats("playerA", playerAGifts);
-    updatePlayerStats("playerB", playerBGifts);
-
-    gridA = generateGrid(playerAGifts);
-    gridB = generateGrid(playerBGifts);
-
-    renderGrid(gridA, "playerA");
-    renderGrid(gridB, "playerB");
-
-    round = 1;
-    document.getElementById("battleLog").textContent = '🏁 Битва началась!\n';
-    runBattleStep(); // запускаем по раундам
-}
-
+let initialStats = {
+    playerA: null,
+    playerB: null
+  };
+  
 function startFreeForAll() {
+    // подчищаем старый лог и пишем шапку
+    clearLog();
+    updateLog('🔥 Berserk Mode начался');
+  
     const selectedGiftsA = getSelectedGifts("playerA");
     const selectedGiftsB = getSelectedGifts("playerB");
-
+  
     const gridA = generateGrid(selectedGiftsA);
     const gridB = generateGrid(selectedGiftsB);
-
+  
+    // 1) сохраняем исходные stats по пикселям
+    const initialA = {
+        attack:  gridA.filter(p => p.type === "🟥").length,
+        defense: gridA.filter(p => p.type === "⬛").length,
+        hp:      gridA.reduce((sum, p) => sum + p.hp, 0)    // суммируем реальное HP
+      };
+      const initialB = {
+        attack:  gridB.filter(p => p.type === "🟥").length, // теперь gridB!
+        defense: gridB.filter(p => p.type === "⬛").length,
+        hp:      gridB.reduce((sum, p) => sum + p.hp, 0)
+      };
+  
+    // отрисовываем сетки
     renderGrid(gridA, "playerA");
     renderGrid(gridB, "playerB");
-
-    const log = [];
-
-    let indexA = 0;
-    let indexB = 0;
-
+  
+    // 2) сразу рисуем полоски с начальными значениями
+    updatePlayerStats("playerA", initialA, initialA);
+    updatePlayerStats("playerB", initialB, initialB);
+  
+    let indexA = 0, indexB = 0;
+  
     function isAlive(pixel) {
-        return pixel.hp > 0;
+      return pixel.hp > 0;
     }
-
+  
     function nextAlive(grid, index) {
-        while (index < grid.length && !isAlive(grid[index])) {
-            index++;
-        }
-        return index < grid.length ? index : -1;
+      while (index < grid.length && !isAlive(grid[index])) {
+        index++;
+      }
+      return index < grid.length ? index : -1;
     }
-
-    function fightSimultaneous(a, b) {
-        fight(a, b);
-    }
-
+  
     function battleStep() {
-        indexA = nextAlive(gridA, indexA);
-        indexB = nextAlive(gridB, indexB);
-
-        if (indexA === -1 && indexB === -1) {
-            log.push("⚔️ Бой завершён. Никто не выжил.");
-            endBattle(log);
-            return;
-        }
-
-        if (indexA === -1) {
-            log.push("🎉 Победа Игрока B!");
-            endBattle(log);
-            return;
-        }
-
-        if (indexB === -1) {
-            log.push("🎉 Победа Игрока A!");
-            endBattle(log);
-            return;
-        }
-
-        const pixA = gridA[indexA];
-        const pixB = gridB[indexB];
-
-        fightSimultaneous(pixA, pixB);
-        log.push(`🔥 Пиксели A[${indexA}] и B[${indexB}] атаковали`);
-
-        setTimeout(battleStep, 600); // пауза между ходами
+      indexA = nextAlive(gridA, indexA);
+      indexB = nextAlive(gridB, indexB);
+  
+      if (indexA === -1 && indexB === -1) {
+        updateLog("⚔️ Бой завершён. Никто не выжил.");
+        return;
+      }
+      if (indexA === -1) {
+        updateLog("🎉 Победа Игрока B!");
+        return;
+      }
+      if (indexB === -1) {
+        updateLog("🎉 Победа Игрока A!");
+        return;
+      }
+  
+      const pixA = gridA[indexA];
+      const pixB = gridB[indexB];
+  
+      fight(pixA, pixB);
+      updateLog(`🔥 Пиксели A[${indexA}] и B[${indexB}] атаковали`);
+  
+      // 3) пересчитаем текущие stats
+      const currA = {
+        attack:  gridA.filter(p => p.type === "🟥" && p.hp > 0).length,
+        defense: gridA.filter(p => p.type === "⬛" && p.hp > 0).length,
+        hp: gridA.reduce((sum, p) => sum + Math.max(p.hp, 0), 0)
+      };
+      const currB = {
+        attack:  gridB.filter(p => p.type === "🟥" && p.hp > 0).length,
+        defense: gridB.filter(p => p.type === "⬛" && p.hp > 0).length,
+        hp: gridB.reduce((sum, p) => sum + Math.max(p.hp, 0), 0)
+      };
+  
+      // обновляем полоски
+      updatePlayerStats("playerA", currA, initialA);
+      updatePlayerStats("playerB", currB, initialB);
+  
+      setTimeout(battleStep, 600); // пауза между ходами
     }
-
+  
     battleStep();
-}
+  }
 
 function endBattle(logLines) {
     const logElement = document.getElementById("battleLog");
@@ -472,83 +403,131 @@ function endBattle(logLines) {
 }
 
 function startFreeForAllBattle() {
+    clearLog();
+    updateLog("🔥 Режим: Все против всех");
+  
     const presentsA = Array.from(document.querySelectorAll("#playerA-selects select")).map(s => s.value);
     const presentsB = Array.from(document.querySelectorAll("#playerB-selects select")).map(s => s.value);
-
+  
     let gridA = generateGrid(presentsA);
     let gridB = generateGrid(presentsB);
-
+  
+    // 1) записываем исходные stats по пикселям
+    const initialA = {
+        attack:  gridA.filter(p => p.type === "🟥").length,
+        defense: gridA.filter(p => p.type === "⬛").length,
+        hp:      gridA.reduce((sum, p) => sum + p.hp, 0)    // суммируем реальное HP
+      };
+      const initialB = {
+        attack:  gridB.filter(p => p.type === "🟥").length, // теперь gridB!
+        defense: gridB.filter(p => p.type === "⬛").length,
+        hp:      gridB.reduce((sum, p) => sum + p.hp, 0)
+      };
+  
     renderGrid(gridA, "playerA");
     renderGrid(gridB, "playerB");
-
-    const log = document.getElementById("battleLog");
-    log.innerText = "🔥 Режим: Все против всех\n";
-
-    // Функция, которая находит живых пикселей
+  
+    // 2) сразу рисуем полоски
+    updatePlayerStats("playerA", { ...initialA }, initialA);
+    updatePlayerStats("playerB", { ...initialB }, initialB);
+  
     const getAlive = grid => grid.filter(p => p.hp > 0);
-
-    // Запуск с шагом
     let round = 1;
+  
     function nextRound() {
-        const aliveA = getAlive(gridA);
-        const aliveB = getAlive(gridB);
-
-        if (aliveA.length === 0 || aliveB.length === 0) {
-            const winner = aliveA.length > 0 ? "Игрок A" : aliveB.length > 0 ? "Игрок B" : "Никто";
-            log.innerText += `\n🏁 Победитель: ${winner}`;
-            return;
+      const aliveA = getAlive(gridA);
+      const aliveB = getAlive(gridB);
+  
+      if (!aliveA.length || !aliveB.length) {
+        const winner = aliveA.length ? "Игрок A" : aliveB.length ? "Игрок B" : "Никто";
+        updateLog(`🏁 Победитель: ${winner}`);
+        return;
+      }
+  
+      updateLog(`⚔ Раунд ${round++} — ${aliveA.length} vs ${aliveB.length}`);
+  
+      const attackersA = [...aliveA];
+      const attackersB = [...aliveB];
+      let i = 0;
+  
+      function step() {
+        if (i >= Math.max(attackersA.length, attackersB.length)) {
+          // после завершения volleya — следующий раунд
+          return setTimeout(nextRound, 600);
         }
-
-        log.innerText += `\n⚔ Раунд ${round++} — ${aliveA.length} vs ${aliveB.length}`;
-
-        // Копируем массивы, чтобы не мешать итерации
-        const attackersA = [...aliveA];
-        const attackersB = [...aliveB];
-
-        let i = 0;
-        function step() {
-            if (i >= Math.max(attackersA.length, attackersB.length)) {
-                setTimeout(nextRound, 600);
-                return;
-            }
-
-            const attackerA = attackersA[i % attackersA.length];
-            const targetB = getAlive(gridB)[0];
-
-            const attackerB = attackersB[i % attackersB.length];
-            const targetA = getAlive(gridA)[0];
-
-            if (attackerA && targetB) fight(attackerA, targetB);
-            if (attackerB && targetA) fight(attackerB, targetA);
-
-            i++;
-            setTimeout(step, 150); // пауза между выстрелами
-        }
-
-        step();
+  
+        const attackerA = attackersA[i % attackersA.length];
+        const targetB   = getAlive(gridB)[0];
+        const attackerB = attackersB[i % attackersB.length];
+        const targetA   = getAlive(gridA)[0];
+  
+        if (attackerA && targetB) fight(attackerA, targetB);
+        if (attackerB && targetA) fight(attackerB, targetA);
+  
+        // ** Сразу после каждого выстрела пересчитываем и обновляем полоски **
+        const currA = {
+            attack:  gridA.filter(p => p.type==="🟥" && p.hp>0).length,
+            defense: gridA.filter(p => p.type==="⬛" && p.hp>0).length,
+            hp: gridA.reduce((sum,p)=> sum + Math.max(p.hp,0), 0)
+          };
+        const currB = {
+            attack:  gridB.filter(p => p.type==="🟥" && p.hp>0).length,
+            defense: gridB.filter(p => p.type==="⬛" && p.hp>0).length,
+            hp: gridB.reduce((sum,p)=> sum + Math.max(p.hp,0), 0)
+          };
+        updatePlayerStats("playerA", currA, initialA);
+        updatePlayerStats("playerB", currB, initialB);
+  
+        i++;
+        setTimeout(step, 150);
+      }
+  
+      step();
     }
-
+  
     nextRound();
-}
+  }
+
+function randomizeSelects(playerId) {
+    const selects = document.querySelectorAll(`#${playerId}-selects select`);
+    const giftNames = Object.keys(giftStats);
+    selects.forEach(select => {
+      const rnd = giftNames[Math.floor(Math.random() * giftNames.length)];
+      select.value = rnd;
+    });
+  }
+
 
 
 // Инициализация
 window.onload = () => {
     createGiftSelectors("playerA");
     createGiftSelectors("playerB");
-
-    // Получаем текущие выбранные подарки
-    const initialPresentsA = getSelectedGifts("playerA");
-    const initialPresentsB = getSelectedGifts("playerB");
-
-    // Обновляем статистику для игроков
-    updatePlayerStats("playerA", initialPresentsA);
-    updatePlayerStats("playerB", initialPresentsB);
-
-    // Генерируем и отображаем сетку для игроков
-    const gridA = generateGrid(initialPresentsA);
-    const gridB = generateGrid(initialPresentsB);
-
+  
+    randomizeSelects("playerA");
+    randomizeSelects("playerB");
+  
+    // --- PLAYER A ---
+    const presentsA = getSelectedGifts("playerA");
+    const gridA     = generateGrid(presentsA);
+    const initialA = {
+      attack:  gridA.filter(p => p.type === "🟥").length,
+      defense: gridA.filter(p => p.type === "⬛").length,
+      hp:      gridA.reduce((sum, p) => sum + p.hp, 0)
+    };
+    initialStats.playerA = initialA;     
+    updatePlayerStats("playerA", initialA, initialA);
     renderGrid(gridA, "playerA");
+  
+    // --- PLAYER B ---
+    const presentsB = getSelectedGifts("playerB");
+    const gridB     = generateGrid(presentsB);
+    const initialB = {
+      attack:  gridB.filter(p => p.type === "🟥").length,
+      defense: gridB.filter(p => p.type === "⬛").length,
+      hp:      gridB.reduce((sum, p) => sum + p.hp, 0)
+    };
+    initialStats.playerB = initialB;            
+    updatePlayerStats("playerB", initialB, initialB);
     renderGrid(gridB, "playerB");
-};
+  };
