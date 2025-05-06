@@ -15,40 +15,21 @@
   <div>
     <h2>Игрок A</h2>
     <div id="playerA" class="player grid-box" data-player="playerA"></div>
-    <div id="playerA-stats">
-      <p id="playerA-atk">АТК: 0</p>
-      <div id="playerA-atk-bar" class="stat-bar"></div>
-      <p id="playerA-defense">ЗАЩ: 0</p>
-      <div id="playerA-defense-bar" class="stat-bar"></div>
-      <p id="playerA-hp">HP: 0</p>
-      <div id="playerA-hp-bar" class="stat-bar"></div>
-    </div>
+   <div id="playerA-stats"></div>
   </div>
   <div>
     <h2>Игрок B</h2>
     <div id="playerB" class="player grid-box" data-player="playerB"></div>
-    <div id="playerB-stats">
-      <p id="playerB-atk">АТК: 0</p>
-      <div id="playerB-atk-bar" class="stat-bar"></div>
-      <p id="playerB-defense">ЗАЩ: 0</p>
-      <div id="playerB-defense-bar" class="stat-bar"></div>
-      <p id="playerB-hp">HP: 0</p>
-      <div id="playerB-hp-bar" class="stat-bar"></div>
-    </div>
+   <div id="playerB-stats"></div>
   </div>
 </div>
+<div class="buttons">
+  <button onclick="startFreeForAll()">🔥 Berserk Mode</button>
+  <button onclick="startFreeForAllBattle()">🔥 Все против всех</button>
+  <button onclick="goBackToMainApp()" style="position: fixed; top: 5px; left: 5px; z-index: 1000;">
+    ← Назад
+</button>
   <div id="battleLog" class="log-box"></div>
-  <svg id="projectile" width="24" height="24" viewBox="0 0 24 24" fill="none"
-     xmlns="http://www.w3.org/2000/svg" style="position:absolute; display:none; z-index:10;">
-  <circle cx="12" cy="12" r="8" fill="url(#gradient)" />
-  <defs>
-    <linearGradient id="gradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#ff0000"/>
-      <stop offset="1" stop-color="#ffaa00"/>
-    </linearGradient>
-  </defs>
-</svg>
-
   <div class="gift-select-wrapper">
     <div>
       <h3>Выбор подарков для Игрока A</h3>
@@ -60,13 +41,7 @@
     </div>
   </div>
 
-  <div class="buttons">
-    <button onclick="startBattle()">🚀 Классика</button>
-    <button onclick="startFreeForAll()">🔥 Berserk Mode</button>
-    <button onclick="startFreeForAllBattle()">🔥 Все против всех</button>
-    <button onclick="goBackToMainApp()" style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
-      ← Назад
-    </button>
+  
     
     <script>
       function goBackToMainApp() {
