@@ -1,4 +1,4 @@
-const giftStats = {
+const glsStats = {
     BEAST: { attack: 5, defense: 5, hp: 3 },
     JOBS:  { attack: 2,  defense: 10, hp: 3 },
     GLASS: { attack: 1,  defense: 1, hp: 11 },
