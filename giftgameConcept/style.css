@@ -1,3 +1,5 @@
+
+
 /* === БАЗОВЫЙ СТИЛЬ === */
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -21,12 +23,13 @@ h2, h3 {
 #arena {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 30px;
   margin-top: 30px;
   padding: 20px;
   background: #1e1e1e;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+  scroll-margin-top: 100px;
 }
 
 /* === ИГРОКИ И СЕТКА === */
@@ -172,7 +175,8 @@ button:hover {
   background: #202020;
   border: 1px solid #444;
   border-radius: 8px;
-  max-height: 150px;
+  max-height: 190px;
+  min-width: 200px;
   overflow-y: auto;
   font-family: monospace;
   white-space: pre-line;
@@ -238,7 +242,7 @@ button:hover {
     display: flex;
     flex-wrap: wrap;        /* пусть переносятся при нехватке места */
     justify-content: center;/* выравнивание по центру */
-    gap: 10px;              /* расстояние между кнопками */
+    gap: 30px;              /* расстояние между кнопками */
   }
 
   .buttons button {
@@ -269,4 +273,67 @@ button:hover {
 .stat-label {
   font-size:12px;
   margin-top:4px;
+}
+
+/* Всплывашки*/
+
+/* контейнер двух блоков «Игрок A» и «Игрок B» */
+.gift-select-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;               /* расстояние между блоками A и B */
+  margin: 20px 0;
+}
+
+/* каждый блок подарков — фиксированная узкая колонка */
+.gift-select {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;                /* отступ между слотами внутри блока */
+  width: 150px;            /* подберите под свой дизайн */
+  max-width: 100%;
+}
+
+/* одна «строка» слота: номер + 5 селектов */
+.gift-slot {
+  display: flex;
+  align-items: center;
+  gap: 4px;                /* пространство между ном. и селектами */
+}
+
+/* номер слота */
+.gift-slot .slot-number {
+  width: 16px;
+  text-align: right;
+  color: #ccc;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* обёртка label+select */
+.gift-attr {
+  display: flex;
+  flex-direction: column;
+  font-size: 10px;
+  flex: 1;                 /* равномерно делим ширину между пятью селектами */
+}
+
+/* сам селект — более компактный */
+.gift-attr select {
+  width: 100%;
+  padding: 2px 4px;
+  font-size: 11px;
+  background: #1b1b1b;
+  border: 1px solid #666;
+  border-radius: 4px;
+  color: #fff;
+}
+
+/* подписи над селектом */
+.gift-attr label {
+  margin-bottom: 2px;
+  font-size: 9px;
+  color: #aaa;
+  text-transform: uppercase;
 }
