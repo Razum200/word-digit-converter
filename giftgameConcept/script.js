@@ -1,5 +1,11 @@
+
 // В самом верху script.js, ещё до любых функций
 let logLines = [];
+// сюда будем сохранять «исходные» статы для A и B
+let initialStats = {
+  playerA: null,
+  playerB: null
+};
 
 // Очистить лог
 function clearLog() {
@@ -10,7 +16,7 @@ function clearLog() {
 // Добавить новую строку и отобразить
 function updateLog(line) {
   logLines.push(line);
-  if (logLines.length > 10) logLines.shift();       // храним последние 10 строк
+  if (logLines.length > 4) logLines.shift();       // храним последние 4 строки
   document.getElementById('battleLog').innerText = logLines.join('\n');
 }
 
@@ -140,12 +146,88 @@ function fight(pixA, pixB) {
 }
 
 
-// Получение выбранных подарков игрока
+// Получение выбранных подарков ииигрокаааааа
 function getSelectedGifts(playerId) {
     const container = document.getElementById(`${playerId}-selects`);
     return Array.from(container.querySelectorAll("select"))
         .map(sel => sel.value)
         .filter(value => value && glsStats[value]); // фильтруем пустые и невалидные
+}
+
+function createGiftInputs(playerId) {
+  const container = document.getElementById(`${playerId}-selects`);
+  container.innerHTML = '';
+
+  // утилитка для одного выпадашечного списка
+  function makeSelect(statsLabel, statsObj) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'gift-attr';
+    const lbl = document.createElement('label');
+    lbl.textContent = statsLabel;
+    const sel = document.createElement('select');
+    Object.keys(statsObj).forEach(key => {
+      const opt = document.createElement('option');
+      opt.value   = key;
+      opt.textContent = key;
+      sel.appendChild(opt);
+    });
+    wrapper.append(lbl, sel);
+    return wrapper;
+  }
+
+  // теперь 6 «строк», каждая с номером и пятью селектами
+  for (let i = 0; i < 6; i++) {
+    const slotDiv = document.createElement('div');
+    slotDiv.className = 'gift-slot';
+
+    // Номер слота
+    const num = document.createElement('span');
+    num.className = 'slot-number';
+    num.textContent = (i + 1) + '.';
+    slotDiv.appendChild(num);
+
+    // пять атрибутов
+    slotDiv.append(
+      makeSelect('GLS',     glsStats),
+      makeSelect('NFT',     nftStats),
+      makeSelect('МОДЕЛЬ',  modelStats),
+      makeSelect('УЗОР',    patternStats),
+      makeSelect('ФОН',     bgStats),
+    );
+
+    // навешиваем onchange на все селекты внутри строки
+    slotDiv.querySelectorAll('select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        // собираем все слоты в массив объектов {gls,nft,model,patt,bg}
+        const allP = Array.from(container.children).map(row => {
+          const [g, n, m, p, b] = row.querySelectorAll('select');
+          return { gls: g.value, nft: n.value, model: m.value, patt: p.value, bg: b.value };
+        });
+        // пересчитываем статы и грид
+        const curr = calculateTotalStats(allP);
+        updatePlayerStats(playerId, curr, initialStats[playerId]);
+        renderGrid(generateGrid(allP.map(x => x.gls)), playerId);
+      });
+    });
+
+    container.appendChild(slotDiv);
+  }
+}
+
+/**
+ * Заполняет все селекты в каждом слоте случайными значениями
+ */
+function randomizeGiftInputs(playerId) {
+  const container = document.getElementById(`${playerId}-selects`);
+  const statsList = [ glsStats, nftStats, modelStats, patternStats, bgStats ];
+  container.querySelectorAll('.gift-slot').forEach(slotDiv => {
+    const selects = slotDiv.querySelectorAll('select');
+    selects.forEach((sel, idx) => {
+      const keys = Object.keys(statsList[idx]);
+      sel.value = keys[Math.floor(Math.random() * keys.length)];
+    });
+    
+  });
 }
 
 // Она будет обновлять статистику игрока, например, атаку, защиту и здоровье в зависимости от выбранных подарков
@@ -277,36 +359,20 @@ function showProjectile(fromEl, toEl, symbol, callback) {
 
 
 // Функция для расчета общей силы игрока
-function calculateTotalStats(presents) {
-    if (!Array.isArray(presents)) {
-        return { attack: 0, defense: 0, hp: 0 };
-    }
-
-    let totalAttack = 0;
-    let totalDefense = 0;
-    let totalHP = 0;
-
-    presents.forEach(name => {
-        const stats = glsStats[name];
-        if (stats) {
-            totalAttack += stats.attack;
-            totalDefense += stats.defense;
-            totalHP += stats.hp;
-        }
-    });
-
-    return {
-        attack: totalAttack,
-        defense: totalDefense,
-        hp: totalHP
-    };
+function calculateTotalStats(presentsArr) {
+  const sums = { attack: 0, defense: 0, hp: 0 };
+  presentsArr.forEach(p => {
+    [ glsStats[p.gls], nftStats[p.nft], modelStats[p.model],
+      patternStats[p.patt], bgStats[p.bg] ]
+      .forEach(stats => {
+        if (!stats) return;
+        sums.attack  += stats.attack;
+        sums.defense += stats.defense;
+        sums.hp      += stats.hp;
+      });
+  });
+  return sums;
 }
-
-
-let initialStats = {
-    playerA: null,
-    playerB: null
-  };
   
 function startFreeForAll() {
     // подчищаем старый лог и пишем шапку
@@ -339,7 +405,15 @@ function startFreeForAll() {
     updatePlayerStats("playerA", initialA, initialA);
     updatePlayerStats("playerB", initialB, initialB);
   
+    // После всего — плавно скроллим к арене
+    document.getElementById('arena').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
     let indexA = 0, indexB = 0;
+
+    
   
     function isAlive(pixel) {
       return pixel.hp > 0;
@@ -431,6 +505,12 @@ function startFreeForAllBattle() {
     updatePlayerStats("playerA", { ...initialA }, initialA);
     updatePlayerStats("playerB", { ...initialB }, initialB);
   
+    // После всего — плавно скроллим к арене
+    document.getElementById('arena').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+    
     const getAlive = grid => grid.filter(p => p.hp > 0);
     let round = 1;
   
@@ -501,33 +581,32 @@ function randomizeSelects(playerId) {
 
 // Инициализация
 window.onload = () => {
-    createGiftSelectors("playerA");
-    createGiftSelectors("playerB");
-  
-    randomizeSelects("playerA");
-    randomizeSelects("playerB");
-  
-    // --- PLAYER A ---
-    const presentsA = getSelectedGifts("playerA");
-    const gridA     = generateGrid(presentsA);
-    const initialA = {
-      attack:  gridA.filter(p => p.type === "🟥").length,
-      defense: gridA.filter(p => p.type === "⬛").length,
-      hp:      gridA.reduce((sum, p) => sum + p.hp, 0)
-    };
-    initialStats.playerA = initialA;     
-    updatePlayerStats("playerA", initialA, initialA);
-    renderGrid(gridA, "playerA");
-  
-    // --- PLAYER B ---
-    const presentsB = getSelectedGifts("playerB");
-    const gridB     = generateGrid(presentsB);
-    const initialB = {
-      attack:  gridB.filter(p => p.type === "🟥").length,
-      defense: gridB.filter(p => p.type === "⬛").length,
-      hp:      gridB.reduce((sum, p) => sum + p.hp, 0)
-    };
-    initialStats.playerB = initialB;            
-    updatePlayerStats("playerB", initialB, initialB);
-    renderGrid(gridB, "playerB");
-  };
+  ['playerA','playerB'].forEach(playerId => {
+    // 1) Создаём 6 «слотов» и рандомно их заполняем
+    createGiftInputs(playerId);
+    randomizeGiftInputs(playerId);
+
+    // 2) Собираем состояние всех 6 слотов
+    const container = document.getElementById(`${playerId}-selects`);
+    const allPresents = Array.from(container.children).map(slotDiv => {
+      const [g, n, m, p, b] = slotDiv.querySelectorAll('select');
+      return {
+        gls:   g.value,
+        nft:   n.value,
+        model: m.value,
+        patt:  p.value,
+        bg:    b.value
+      };
+    });
+
+    // 3) Один раз считаем и сохраняем initialStats
+    const init = calculateTotalStats(allPresents);
+    initialStats[playerId] = init;
+
+    // 4) И один раз рендерим полосу и грид
+    updatePlayerStats(playerId, init, init);
+    renderGrid(generateGrid(allPresents.map(x => x.gls)), playerId);
+  });
+
+  // дальше ваши кнопки старта боя уже могут пользоваться готовым initialStats...
+};
