@@ -20,28 +20,48 @@ function updateLog(line) {
   document.getElementById('battleLog').innerText = logLines.join('\n');
 }
 
+/**
+ * Собирает из DOM для игрока массив объектов
+ * [{ gls: 'BEAST', nft: 'Pepe', model: 'Golden', patt: 'Octo', bg: 'Black' }, …]
+ */
+function getAllPresents(playerId) {
+  const container = document.getElementById(`${playerId}-selects`);
+  return Array.from(container.children).map(slotDiv => {
+    const [g, n, m, p, b] = slotDiv.querySelectorAll('select');
+    return {
+      gls:   g.value,
+      nft:   n.value,
+      model: m.value,
+      patt:  p.value,
+      bg:    b.value
+    };
+  });
+}
+
 // Генерация сетки для игрока 🧱🧱🧱🧱🧱🧱
-function generateGrid(presents) {
-    let grid = [];
+// Генерация сетки для игрока — берём весь массив объектов {gls,nft,model,patt,bg}
+function generateGrid(presentsArr) {
+  // если нет подарков — просто 81 «пустышка»
+  if (!Array.isArray(presentsArr) || presentsArr.length === 0) {
+    return Array(81).fill({ type: "⬜", hp: 1, defense: 0 });
+  }
 
-    if (!presents || presents.length === 0) {
-        return Array(81).fill({ type: "⬜", hp: 1, defense: 0 });
-    }
+  // 1) объединяем все пять источников статов
+  const stats = calculateTotalStats(presentsArr);  
+  //    stats = { attack: X, defense: Y, hp: Z }
 
-    presents.forEach(name => {
-        const stats = glsStats[name];
-        if (!stats) return;
+  // 2) строим массив пикселей
+  const grid = [];
+  for (let i = 0; i < stats.attack; i++)   grid.push({ type: "🟥", hp: 10, defense: 6 });
+  for (let i = 0; i < stats.defense; i++)  grid.push({ type: "⬛", hp: 10, defense: 6 });
+  for (let i = 0; i < stats.hp; i++) grid.push({ type: "⬜", hp: 10,  defense: 0 });
 
-        for (let i = 0; i < stats.attack; i++) grid.push({ type: "🟥", hp: 10, defense: 1 });
-        for (let i = 0; i < stats.defense; i++) grid.push({ type: "⬛", hp: 10, defense: 3 });
-        for (let i = 0; i < stats.hp; i++) grid.push({ type: "⬜", hp: 10, defense: 0 });
-    });
+  // 3) дополняем до 81 «пустышкой» с hp=1
+  while (grid.length < 81) {
+    grid.push({ type: "▫️", hp: 1, defense: 0 });
+  }
 
-    while (grid.length < 81) {
-        grid.push({ type: "⬜", hp: 1, defense: 0 });
-    }
-
-    return grid.slice(0, 81);
+  return grid;
 }
 
 // Отображение сетки на экране
@@ -147,13 +167,6 @@ function fight(pixA, pixB) {
 
 
 // Получение выбранных подарков ииигрокаааааа
-function getSelectedGifts(playerId) {
-    const container = document.getElementById(`${playerId}-selects`);
-    return Array.from(container.querySelectorAll("select"))
-        .map(sel => sel.value)
-        .filter(value => value && glsStats[value]); // фильтруем пустые и невалидные
-}
-
 function createGiftInputs(playerId) {
   const container = document.getElementById(`${playerId}-selects`);
   container.innerHTML = '';
@@ -199,14 +212,14 @@ function createGiftInputs(playerId) {
     slotDiv.querySelectorAll('select').forEach(sel => {
       sel.addEventListener('change', () => {
         // собираем все слоты в массив объектов {gls,nft,model,patt,bg}
-        const allP = Array.from(container.children).map(row => {
+        const allPresents = Array.from(container.children).map(row => {
           const [g, n, m, p, b] = row.querySelectorAll('select');
           return { gls: g.value, nft: n.value, model: m.value, patt: p.value, bg: b.value };
         });
         // пересчитываем статы и грид
-        const curr = calculateTotalStats(allP);
+        const curr = calculateTotalStats(allPresents);
         updatePlayerStats(playerId, curr, initialStats[playerId]);
-        renderGrid(generateGrid(allP.map(x => x.gls)), playerId);
+        renderGrid(generateGrid(allPresents), playerId);
       });
     });
 
@@ -254,40 +267,6 @@ function updatePlayerStats(playerId, current, initial) {
     `;
     statsEl.style.display = 'block';
   }
-
-// Создание селекторов подарков для каждого игрока
-function createGiftSelectors(playerId) {
-    const container = document.getElementById(`${playerId}-selects`);
-    container.innerHTML = ''; // очищаем
-
-    for (let i = 0; i < 6; i++) {
-        const select = document.createElement("select");
-
-        Object.keys(glsStats).forEach(giftName => {
-            const option = document.createElement("option");
-            option.value = giftName;
-            option.textContent = giftName;
-            select.appendChild(option);
-        });
-
-        // Добавляем обработчик на изменение выбора
-        select.addEventListener("change", function () {
-            const newPresents = getSelectedGifts(playerId);
-           // пересчитываем «текущие» статы из выбранных подарков
-           const curr = calculateTotalStats(newPresents);
-           // обновляем бар, передавая current и сохранённый initial
-           updatePlayerStats(playerId, curr, initialStats[playerId]);
-            // 2) генерируем новую сетку
-            const newGrid = generateGrid(newPresents);
-            // 3) перерисовываем грид в нужном контейнере
-            renderGrid(newGrid, playerId);
-          });
-
-        container.appendChild(select);
-    }
-}
-
-
 
 function animateProjectile(fromEl, toEl) {
     return new Promise(resolve => {
@@ -379,11 +358,11 @@ function startFreeForAll() {
     clearLog();
     updateLog('🔥 Berserk Mode начался');
   
-    const selectedGiftsA = getSelectedGifts("playerA");
-    const selectedGiftsB = getSelectedGifts("playerB");
-  
-    const gridA = generateGrid(selectedGiftsA);
-    const gridB = generateGrid(selectedGiftsB);
+    const allPresentsA = getAllPresents("playerA");
+    const allPresentsB = getAllPresents("playerB");
+
+    const gridA = generateGrid(allPresentsA);
+    const gridB = generateGrid(allPresentsB);
   
     // 1) сохраняем исходные stats по пикселям
     const initialA = {
@@ -480,11 +459,10 @@ function startFreeForAllBattle() {
     clearLog();
     updateLog("🔥 Режим: Все против всех");
   
-    const presentsA = Array.from(document.querySelectorAll("#playerA-selects select")).map(s => s.value);
-    const presentsB = Array.from(document.querySelectorAll("#playerB-selects select")).map(s => s.value);
-  
-    let gridA = generateGrid(presentsA);
-    let gridB = generateGrid(presentsB);
+    const allA = getAllPresents("playerA");
+    const allB = getAllPresents("playerB");
+    let gridA = generateGrid(allA);
+    let gridB = generateGrid(allB);
   
     // 1) записываем исходные stats по пикселям
     const initialA = {
@@ -510,7 +488,7 @@ function startFreeForAllBattle() {
       behavior: 'smooth',
       block: 'start'
     });
-    
+
     const getAlive = grid => grid.filter(p => p.hp > 0);
     let round = 1;
   
@@ -582,31 +560,22 @@ function randomizeSelects(playerId) {
 // Инициализация
 window.onload = () => {
   ['playerA','playerB'].forEach(playerId => {
-    // 1) Создаём 6 «слотов» и рандомно их заполняем
+    // 1) создаём 6 слотов и рандомно их заполняем
     createGiftInputs(playerId);
     randomizeGiftInputs(playerId);
 
-    // 2) Собираем состояние всех 6 слотов
-    const container = document.getElementById(`${playerId}-selects`);
-    const allPresents = Array.from(container.children).map(slotDiv => {
-      const [g, n, m, p, b] = slotDiv.querySelectorAll('select');
-      return {
-        gls:   g.value,
-        nft:   n.value,
-        model: m.value,
-        patt:  p.value,
-        bg:    b.value
-      };
-    });
+    // 2) сразу “собираем” из DOM полный набор параметров
+    const allPresents = getAllPresents(playerId);
 
-    // 3) Один раз считаем и сохраняем initialStats
-    const init = calculateTotalStats(allPresents);
-    initialStats[playerId] = init;
+    // 3) один раз сохраняем исходные статы
+    initialStats[playerId] = calculateTotalStats(allPresents);
 
-    // 4) И один раз рендерим полосу и грид
-    updatePlayerStats(playerId, init, init);
-    renderGrid(generateGrid(allPresents.map(x => x.gls)), playerId);
+    // 4) рисуем стат-бары и грид
+    updatePlayerStats(
+      playerId,
+      initialStats[playerId],  // current  = initial
+      initialStats[playerId]   // initial
+    );
+    renderGrid(generateGrid(allPresents), playerId);
   });
-
-  // дальше ваши кнопки старта боя уже могут пользоваться готовым initialStats...
 };
