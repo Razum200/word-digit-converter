@@ -1,5 +1,5 @@
 
-// В самом верху script.js, ещё до любых функций
+// В самом верху script.js, ещё до любых функциййййй
 let logLines = [];
 // сюда будем сохранять «исходные» статы для A и B
 let initialStats = {
@@ -38,7 +38,7 @@ function getAllPresents(playerId) {
   });
 }
 
-// Генерация сетки для игрока 🧱🧱🧱🧱🧱🧱
+// Генерация сетки для игрока 🧱🧱🧱
 // Генерация сетки для игрока — берём весь массив объектов {gls,nft,model,patt,bg}
 function generateGrid(presentsArr) {
   // если нет подарков — просто 81 «пустышка»
@@ -52,13 +52,13 @@ function generateGrid(presentsArr) {
 
   // 2) строим массив пикселей
   const grid = [];
-  for (let i = 0; i < stats.attack; i++)   grid.push({ type: "🟥", hp: 10, defense: 6 });
-  for (let i = 0; i < stats.defense; i++)  grid.push({ type: "⬛", hp: 10, defense: 6 });
-  for (let i = 0; i < stats.hp; i++) grid.push({ type: "⬜", hp: 10,  defense: 0 });
+  for (let i = 0; i < stats.attack; i++)   grid.push({ type: "🟥", hp: 10, defense: 9 });
+  for (let i = 0; i < stats.defense; i++)  grid.push({ type: "⬛", hp: 10, defense: 5 });
+  for (let i = 0; i < stats.hp; i++) grid.push({ type: "⬜", hp: 10,  defense: 1 });
 
   // 3) дополняем до 81 «пустышкой» с hp=1
   while (grid.length < 81) {
-    grid.push({ type: "▫️", hp: 1, defense: 0 });
+    grid.push({ type: "▫️", hp: 1, defense: 0 });   // ← теперь hp:1
   }
 
   return grid;
@@ -93,9 +93,9 @@ function renderGrid(grid, playerId) {
 // Функция для боя между пикселями
 function fight(pixA, pixB) {
     const damage = {
-        "🟥": 12,
+        "🟥": 10,
         "⬛": 6,
-        "⬜": 1
+        "⬜": 2
     };
 
     // Визуальный эффект удара
@@ -175,16 +175,21 @@ function createGiftInputs(playerId) {
   function makeSelect(statsLabel, statsObj) {
     const wrapper = document.createElement('div');
     wrapper.className = 'gift-attr';
-    const lbl = document.createElement('label');
-    lbl.textContent = statsLabel;
+  
+    // создаём <select> без <label>
     const sel = document.createElement('select');
+    sel.title = statsLabel;               // тултип с названием атрибута
+    sel.setAttribute('aria-label', statsLabel); // для доступности
+  
+    // опции из statsObj
     Object.keys(statsObj).forEach(key => {
       const opt = document.createElement('option');
-      opt.value   = key;
+      opt.value       = key;
       opt.textContent = key;
       sel.appendChild(opt);
     });
-    wrapper.append(lbl, sel);
+  
+    wrapper.appendChild(sel);
     return wrapper;
   }
 
@@ -211,15 +216,25 @@ function createGiftInputs(playerId) {
     // навешиваем onchange на все селекты внутри строки
     slotDiv.querySelectorAll('select').forEach(sel => {
       sel.addEventListener('change', () => {
-        // собираем все слоты в массив объектов {gls,nft,model,patt,bg}
-        const allPresents = Array.from(container.children).map(row => {
-          const [g, n, m, p, b] = row.querySelectorAll('select');
-          return { gls: g.value, nft: n.value, model: m.value, patt: p.value, bg: b.value };
-        });
-        // пересчитываем статы и грид
-        const curr = calculateTotalStats(allPresents);
-        updatePlayerStats(playerId, curr, initialStats[playerId]);
-        renderGrid(generateGrid(allPresents), playerId);
+        // 1) собираем все слоты через утилиту
+        const presents = getAllPresents(playerId);
+    
+        // 2) генерируем «пиксельную» сетку
+        const grid = generateGrid(presents);
+    
+        // 3) пересчитываем текущие stats по самой сетке
+        const currStats = {
+          attack:  grid.filter(p => p.type === "🟥" && p.hp > 0).length,
+          defense: grid.filter(p => p.type === "⬛" && p.hp > 0).length,
+          hp:      grid.reduce((sum, p) => sum + p.hp, 0)
+        };
+    
+        // 4) обновляем baseline, чтобы HP‑бар показывал 100% от текущего max
+        initialStats[playerId] = { ...currStats };
+    
+        // 5) отрисовываем сетку и статус‑бары
+        renderGrid(grid, playerId);
+        updatePlayerStats(playerId, currStats, initialStats[playerId]);
       });
     });
 
@@ -245,28 +260,33 @@ function randomizeGiftInputs(playerId) {
 
 // Она будет обновлять статистику игрока, например, атаку, защиту и здоровье в зависимости от выбранных подарков
 function updatePlayerStats(playerId, current, initial) {
-    const { attack, defense, hp } = current;
-    // totalInit — сумма изначальных блоков ATK+DEF+HP
-    const totalInit = initial.attack + initial.defense + initial.hp || 1;
-  
-    // считаем каждую часть пропорционально своему изначальному числу
-    const atkPct = Math.round((attack  / totalInit) * 100);
-    const defPct = Math.round((defense / totalInit) * 100);
-    const hpPct  = Math.round((hp      / totalInit) * 100);
-  
-    const statsEl = document.getElementById(`${playerId}-stats`);
-    statsEl.innerHTML = `
-      <div class="combined-bar">
-        <div class="seg atk" style="width: ${atkPct}%"></div>
-        <div class="seg def" style="width: ${defPct}%"></div>
-        <div class="seg hp"  style="width: ${hpPct}%"></div>
-      </div>
-      <div class="stat-label">
-        ATK: ${attack} | DEF: ${defense} | HP: ${hp}
-      </div>
-    `;
-    statsEl.style.display = 'block';
-  }
+  const { attack, defense, hp } = current;
+
+  // 1) ATK+DEF bar — их сумма всегда 100%
+  const adTotal = (attack + defense) || 1;
+  const atkPct = Math.round((attack  / adTotal) * 100);
+  const defPct = Math.round((defense / adTotal) * 100);
+
+  // 2) HP bar — от начального HP
+  const hpPct = initial.hp > 0
+    ? Math.round((hp / initial.hp) * 100)
+    : 0;
+
+  const statsEl = document.getElementById(`${playerId}-stats`);
+  statsEl.innerHTML = `
+  <div class="combined-bar">
+    <div class="seg atk"   style="width: ${atkPct}%;"></div>
+    <div class="seg def"   style="width: ${defPct}%;"></div>
+  </div>
+  <div class="hp-bar-extra">
+    <div class="hp-fill"   style="width: ${hpPct}%;"></div>
+  </div>
+  <div class="stat-label">
+    ATK: ${attack} | DEF: ${defense} | HP: ${hp}
+  </div>
+`;
+  statsEl.style.display = 'block';
+}
 
 function animateProjectile(fromEl, toEl) {
     return new Promise(resolve => {
@@ -341,14 +361,18 @@ function showProjectile(fromEl, toEl, symbol, callback) {
 function calculateTotalStats(presentsArr) {
   const sums = { attack: 0, defense: 0, hp: 0 };
   presentsArr.forEach(p => {
-    [ glsStats[p.gls], nftStats[p.nft], modelStats[p.model],
-      patternStats[p.patt], bgStats[p.bg] ]
-      .forEach(stats => {
-        if (!stats) return;
-        sums.attack  += stats.attack;
-        sums.defense += stats.defense;
-        sums.hp      += stats.hp;
-      });
+    [
+      glsStats[p.gls],
+      nftStats[p.nft],
+      modelStats[p.model],
+      patternStats[p.patt],
+      bgStats[p.bg]
+    ].forEach(stats => {
+      if (!stats) return;
+      sums.attack  += stats.attack  || 0;
+      sums.defense += stats.defense || 0;
+      sums.hp      += stats.hp      || 0;   // ← здесь
+    });
   });
   return sums;
 }
@@ -560,22 +584,24 @@ function randomizeSelects(playerId) {
 // Инициализация
 window.onload = () => {
   ['playerA','playerB'].forEach(playerId => {
-    // 1) создаём 6 слотов и рандомно их заполняем
+    // 1) создаём и рандомим селекты
     createGiftInputs(playerId);
     randomizeGiftInputs(playerId);
 
-    // 2) сразу “собираем” из DOM полный набор параметров
+    // 2) собираем подарки и сразу строим грид
     const allPresents = getAllPresents(playerId);
+    const grid        = generateGrid(allPresents);
 
-    // 3) один раз сохраняем исходные статы
-    initialStats[playerId] = calculateTotalStats(allPresents);
+    // 3) initialStats — именно из пикселей, а не из подарков
+    const initial = {
+      attack:  grid.filter(p => p.type === "🟥").length,
+      defense: grid.filter(p => p.type === "⬛").length,
+      hp:      grid.reduce((sum, p) => sum + p.hp, 0)   // 10×81 = 810
+    };
+    initialStats[playerId] = initial;
 
-    // 4) рисуем стат-бары и грид
-    updatePlayerStats(
-      playerId,
-      initialStats[playerId],  // current  = initial
-      initialStats[playerId]   // initial
-    );
-    renderGrid(generateGrid(allPresents), playerId);
+    // 4) сразу рисуем статус‑бары и грид
+    updatePlayerStats(playerId, initial, initial);
+    renderGrid(grid, playerId);
   });
 };
