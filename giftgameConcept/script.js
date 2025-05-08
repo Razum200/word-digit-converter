@@ -26,16 +26,12 @@ function updateLog(line) {
  */
 function getAllPresents(playerId) {
   const container = document.getElementById(`${playerId}-selects`);
-  return Array.from(container.children).map(slotDiv => {
-    const [g, n, m, p, b] = slotDiv.querySelectorAll('select');
-    return {
-      gls:   g.value,
-      nft:   n.value,
-      model: m.value,
-      patt:  p.value,
-      bg:    b.value
-    };
-  });
+  return Array.from(container.children)
+    .filter(el => el.classList.contains('gift-slot'))
+    .map(slotDiv => {
+      const [g, n, m, p, b] = slotDiv.querySelectorAll('select');
+      return { gls: g.value, nft: n.value, model: m.value, patt: p.value, bg: b.value };
+    });
 }
 
 // Генерация сетки для игрока 🧱🧱🧱
@@ -171,6 +167,18 @@ function createGiftInputs(playerId) {
   const container = document.getElementById(`${playerId}-selects`);
   container.innerHTML = '';
 
+  const header = document.createElement('div');
+  header.className = 'gift-select-header';
+  header.innerHTML = `
+    <span class="header-slot"></span>
+    <span class="header-attr">GLS</span>
+    <span class="header-attr">NFT</span>
+    <span class="header-attr">МОДЕЛЬ</span>
+    <span class="header-attr">УЗОР</span>
+    <span class="header-attr">ФОН</span>
+  `;
+  container.appendChild(header);
+
   // утилитка для одного выпадашечного списка
   function makeSelect(statsLabel, statsObj) {
     const wrapper = document.createElement('div');
@@ -263,10 +271,10 @@ function updatePlayerStats(playerId, current, initial) {
   const { attack, defense, hp } = current;
 
   // 1) ATK+DEF bar — их сумма всегда 100%
-  const adTotal = (attack + defense) || 1;
-  const atkPct = Math.round((attack  / adTotal) * 100);
-  const defPct = Math.round((defense / adTotal) * 100);
-
+    // 1) ATK+DEF bar — рассчитываем проценты от ИСХОДНОЙ суммы
+    const adTotal = (initial.attack + initial.defense) || 1;
+    const atkPct = Math.round((current.attack  / adTotal) * 100);
+    const defPct = Math.round((current.defense / adTotal) * 100);
   // 2) HP bar — от начального HP
   const hpPct = initial.hp > 0
     ? Math.round((hp / initial.hp) * 100)
